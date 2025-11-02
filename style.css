@@ -1,5 +1,9 @@
 /* २. CSS (पानाची स्टाईल) ✨ */
 :root {
+    /* ---** NEW FONT DEFINITIONS **--- */
+    --font-ui: 'Poppins', sans-serif;
+    --font-text: 'Mukta', sans-serif;
+
     /* --- Day/Night Backgrounds --- */
     --bg-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1920&q=80');
     --bg-overlay: rgba(244, 252, 248, 0.85); /* Light overlay */
@@ -760,4 +764,5 @@ body.light-mode .moon-icon { display: none; }
         border-radius: var(--border-radius-small);
     }
 }
+
 
