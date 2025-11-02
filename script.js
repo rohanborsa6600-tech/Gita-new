@@ -1,529 +1,570 @@
-// संपूर्ण ॲपचे मुख्य लॉजिक (नवीन कमेंट्स-सहित)
+/* --- 💎 गीता ॲप लॉजिक V5 --- */
+/* (ही एक नवीन कमेंट आहे जेणेकरून कोड लपणार नाही) */
+/* (यात साईडबार आणि डेटा लोडर वेगळे केले आहेत) */
 
-// 'DOMContentLoaded' इव्हेंटची वाट पाहतो, म्हणजेच HTML पेज पूर्ण लोड झाल्यावरच कोड चालवतो.
 document.addEventListener('DOMContentLoaded', () => {
-    // १. प्रथम, 'gita-data.html' फाईलमधून डेटा लोड करतो.
-    loadAndParseData();
     
-    // २. डेटा लोड झाल्यावर, बटणे आणि लिंक्स चालू करतो.
-    setupUIControls();
-    setupClickHandlers();
-    setupSuchiControls();
-});
-
-/**
- * ही नवीन आणि सर्वात महत्त्वाची पायरी आहे.
- * ही 'gita-data.html' फाईलला Asynchronously (पार्श्वभूमीत) लोड करते.
- */
-async function loadAndParseData() {
-    console.log("डेटा लोड करणे सुरू करत आहे...");
-    try {
-        // 'gita-data.html' फाईलवरून डेटा आणतो.
-        const response = await fetch('gita-data.html');
-        
-        // जर फाईल मिळाली नाही (उदा. 404), तर एरर देतो.
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status} - 'gita-data.html' फाईल सापडली नाही.`);
-        }
-        
-        // फाईलमधील संपूर्ण HTML मजकूर वाचतो.
-        const htmlData = await response.text();
-        
-        // वाचलेला मजकूर रिकाम्या '#raw-gita-data' div मध्ये टाकतो.
-        const dataContainer = document.getElementById('raw-gita-data');
-        if (dataContainer) {
-            dataContainer.innerHTML = htmlData;
-            console.log("डेटा यशस्वीरित्या लोड झाला.");
-            
-            // डेटा यशस्वीरित्या भरल्यानंतरच, 'parseGitaData' फंक्शन कॉल करतो.
-            parseGitaData();
-        } else {
-            console.error("'#raw-gita-data' हा div सापडला नाही.");
-        }
-
-    } catch (error) {
-        console.error("डेटा लोड करताना मोठी एरर आली:", error);
-        alert("त्रुटी: 'gita-data.html' फाईलमधून डेटा लोड होऊ शकला नाही. फाईल अस्तित्वात आहे का ते तपासा.");
-    }
-}
-
-
-/**
- * ही फाईल '#raw-gita-data' मधला डेटा वाचते आणि ॲप तयार करते.
- * (हे फंक्शन आता 'loadAndParseData' यशस्वी झाल्यावरच चालते)
- */
-function parseGitaData() {
-    console.log("डेटा पार्स करणे (Parsing) सुरू करत आहे...");
-    const dataContainer = document.getElementById('raw-gita-data');
-    if (!dataContainer) {
-        console.error("डेटा कंटेनर सापडला नाही.");
-        return;
-    }
-    
-    const nodes = Array.from(dataContainer.childNodes);
-    const tocContainer = document.getElementById('auto-toc-container');
-    const chaptersContainer = document.getElementById('chapters-container');
-    
-    // जुना डेटा (असल्यास) रिकामा करतो.
-    tocContainer.innerHTML = '';
-    chaptersContainer.innerHTML = '';
-
-    // सूची (Index) साठी डेटा साठवण्याची जागा
+    // ---------------------------------
+    // 1. व्हेरिएबल्स (Variables)
+    // ---------------------------------
     const gitaData = {
+        chapters: [], // { id, title, shlokas: [] }
         indices: {
-            shloka: [], // p3
-            paad: [],   // p11
-            shabda: new Map(), // p3 (शब्द)
-            vakta: []   // p2
-        },
-        shlokaCount: 0
+            shloka: [], // { text, location, firstChar }
+            paad: [],   // { text, location, firstChar }
+            shabda: new Map(), // 'shabd' => ['loc1', 'loc2']
+            vakta: new Map(),  // 'vakta' => ['loc1', 'loc2']
+        }
     };
-
-    let currentChapterTitle = '';
-    let currentChapterNum = 0;
-    let currentVakta = 'अज्ञात';
-    let currentChapterBox = null;
-    let shlokaInChapter = 0;
-
-    // संपूर्ण HTML डेटावरून एक-एक करून जातो
-    nodes.forEach(node => {
-        if (node.nodeType !== Node.ELEMENT_NODE) return; // फक्त HTML टॅग्स तपासतो
-
-        const className = node.className;
-        const text = node.textContent.trim();
-
-        try {
-            // १. अध्याय (p1)
-            if (className === 'p1') {
-                currentChapterNum++;
-                shlokaInChapter = 0;
-                currentChapterTitle = text;
-
-                // साईडबारमध्ये अध्यायाची लिंक बनवतो
-                const tocLink = document.createElement('a');
-                tocLink.href = `#chapter-${currentChapterNum}`;
-                tocLink.textContent = `अध्याय ${currentChapterNum}: ${text}`;
-                tocLink.dataset.target = `chapter-${currentChapterNum}`;
-                tocLink.classList.add('nav-link');
-                tocContainer.appendChild(tocLink);
-
-                // 'गीता पाठ' मध्ये अध्यायाचा बॉक्स बनवतो
-                currentChapterBox = document.createElement('div');
-                currentChapterBox.id = `chapter-${currentChapterNum}`;
-                currentChapterBox.className = 'chapter-box';
-                currentChapterBox.style.display = 'none'; // सुरुवातीला लपवतो
-                
-                const titleHeader = document.createElement('h3');
-                titleHeader.textContent = text;
-                currentChapterBox.appendChild(titleHeader);
-                
-                chaptersContainer.appendChild(currentChapterBox);
-            }
-            // २. वक्ता (p2)
-            else if (className === 'p2') {
-                currentVakta = text;
-                if (currentChapterBox) {
-                    const vaktaPara = document.createElement('p');
-                    vaktaPara.className = 'p4'; // जुन्या स्टाईलनुसार (p4)
-                    vaktaPara.textContent = text;
-                    currentChapterBox.appendChild(vaktaPara);
-                }
-            }
-            // ३. श्लोक (p3)
-            else if (className === 'p3' && currentChapterBox) {
-                // श्लोक क्रमांक काढतो (उदा. 1.1)
-                const shlokaNumberMatch = text.match(/।।([\०१-९]+)\/([\०१-९]+)।।/);
-                let shlokaNum = '';
-                let shlokaID = '';
-
-                if (shlokaNumberMatch) {
-                    // मराठी अंकांचे इंग्रजी अंकात रूपांतर
-                    const marathiToEng = (s) => s.replace(/[\०१२३४५६७८९]/g, d => '०१२३४५६७८९'.indexOf(d));
-                    const adhyayNum = parseInt(marathiToEng(shlokaNumberMatch[1]), 10);
-                    const shlokNumInAdhyay = parseInt(marathiToEng(shlokaNumberMatch[2]), 10);
-                    
-                    shlokaNum = `${adhyayNum}.${shlokNumInAdhyay}`;
-                    shlokaID = `c${adhyayNum}s${shlokNumInAdhyay}`;
-                    gitaData.shlokaCount++;
-                } else {
-                    // जर क्रमांक मिळाला नाही (उदा. श्लोकाची दुसरी ओळ)
-                    shlokaInChapter++;
-                    shlokaNum = `${currentChapterNum}.${shlokaInChapter}`;
-                    shlokaID = `c${currentChapterNum}s${shlokaInChapter}`;
-                }
-                
-                // श्लोक तयार करतो
-                const shlokaPara = document.createElement('p');
-                shlokaPara.className = 'p6'; // जुन्या स्टाईलनुसार (p6)
-                shlokaPara.id = shlokaID;
-                shlokaPara.textContent = text;
-                currentChapterBox.appendChild(shlokaPara);
-
-                // 'श्लोक सूची' साठी डेटा टाकतो (फक्त पहिली ओळ)
-                if (!text.includes('<br>')) { // गृहीत धरतो की p3 मध्ये <br> नाही
-                    gitaData.indices.shloka.push({ text: text.split('।')[0] + '।', loc: shlokaNum });
-                }
-                
-                // 'वक्ता सूची' साठी डेटा टाकतो
-                gitaData.indices.vakta.push({ text: `${currentVakta}: ${text.split('।')[0]}...`, loc: shlokaNum });
-
-                // 'शब्द सूची' साठी डेटा टाकतो
-                const shabdas = text.replace(/।।([\०१-९]+\/[\०१-९]+)।।/g, '').replace(/[।(),.]/g, '').split(/\s+/).filter(Boolean);
-                shabdas.forEach(shabd => {
-                    if (!gitaData.indices.shabda.has(shabd)) {
-                        gitaData.indices.shabda.set(shabd, []);
-                    }
-                    // डुप्लिकेट लोकेशन टाळतो
-                    if (!gitaData.indices.shabda.get(shabd).includes(shlokaNum)) {
-                        gitaData.indices.shabda.get(shabd).push(shlokaNum);
-                    }
-                });
-            }
-            // ४. पाद (p11) - 'पाद सूची' साठी
-            else if (className === 'p11') {
-                // हा पाद कोणत्या श्लोकाचा आहे हे ओळखणे कठीण आहे,
-                // म्हणून आपण सध्याच्या श्लोकाशी जोडूया.
-                const lastShlokaID = `c${currentChapterNum}s${shlokaInChapter}`;
-                const lastShlokaNum = `${currentChapterNum}.${shlokaInChapter}`;
-                gitaData.indices.paad.push({ text: text, loc: lastShlokaNum });
-            }
-            // ५. अन्वय (p6) आणि अर्थ (p9)
-            else if ((className === 'p6' || className === 'p9') && currentChapterBox) {
-                 const detailPara = document.createElement('p');
-                 // CSS स्टाईलसाठी जुना क्लास वापरतो
-                 detailPara.className = `shloka-detail-item ${className === 'p6' ? 'p6-detail' : 'p9'}`;
-                 detailPara.textContent = text;
-                 currentChapterBox.appendChild(detailPara);
-            }
-        } catch (e) {
-            console.warn(`डेटा पार्स करताना एका नोडमध्ये एरर (class: ${className}):`, e);
-        }
-    });
-
-    console.log(`पार्सिंग पूर्ण. ${currentChapterNum} अध्याय आणि ${gitaData.shlokaCount} श्लोक सापडले.`);
     
-    // सर्व सूची (Indices) तयार करतो
-    buildIndices(gitaData);
-}
-
-/**
- * 'gitaData' वरून सर्व ४ सूची HTML मध्ये तयार करतो.
- */
-function buildIndices(gitaData) {
-    const letters = new Set(); // अक्षरांची यादी बनवण्यासाठी
-
-    // १. श्लोक सूची
-    const shlokaContainer = document.getElementById('shloka-index');
-    shlokaContainer.innerHTML = '';
-    gitaData.indices.shloka.forEach(item => {
-        shlokaContainer.appendChild(createIndexItem(item.text, item.loc));
-        letters.add(item.text[0]); // पहिले अक्षर सेटमध्ये टाकतो
-    });
-
-    // २. पाद सूची
-    const paadContainer = document.getElementById('paad-index');
-    paadContainer.innerHTML = '';
-    gitaData.indices.paad.forEach(item => {
-        paadContainer.appendChild(createIndexItem(item.text, item.loc));
-        letters.add(item.text[0]);
-    });
-
-    // ३. वक्ता सूची
-    const vaktaContainer = document.getElementById('vakta-index');
-    vaktaContainer.innerHTML = '';
-    gitaData.indices.vakta.forEach(item => {
-        vaktaContainer.appendChild(createIndexItem(item.text, item.loc));
-        letters.add(item.text[0]); // वक्त्याचे पहिले अक्षर
-    });
-
-    // ४. शब्द सूची (Map)
-    const shabdaContainer = document.getElementById('shabda-index');
-    shabdaContainer.innerHTML = '';
-    // शब्दांना अ-ज्ञ क्रमाने लावतो
-    const sortedShabdas = Array.from(gitaData.indices.shabda.keys()).sort((a, b) => a.localeCompare(b, 'mr'));
-    
-    sortedShabdas.forEach(shabd => {
-        const locations = gitaData.indices.shabda.get(shabd);
-        // शब्दासाठी एक कंटेनर बनवतो
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'shabd-item';
-        itemDiv.dataset.letter = shabd[0]; // फिल्टरसाठी पहिले अक्षर
-        
-        // शब्दाचे नाव (span)
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'shabd-name';
-        nameSpan.textContent = `${shabd} (${locations.length})`;
-        itemDiv.appendChild(nameSpan);
-        
-        // श्लोक क्रमांकांची यादी (locations)
-        const locDiv = document.createElement('div');
-        locDiv.className = 'shabd-locations';
-        locations.forEach(loc => {
-            locDiv.appendChild(createLocationLink(loc));
-        });
-        itemDiv.appendChild(locDiv);
-        shabdaContainer.appendChild(itemDiv);
-        
-        letters.add(shabd[0]); // पहिले अक्षर सेटमध्ये टाकतो
-    });
-    
-    // ५. अक्षरांची सूची (Letter List) तयार करणे
-    const letterContainer = document.querySelector('.letter-list');
-    letterContainer.innerHTML = '';
-    // अक्षरांना अ-ज्ञ क्रमाने लावतो
-    const sortedLetters = Array.from(letters).sort((a, b) => a.localeCompare(b, 'mr'));
-    sortedLetters.forEach(letter => {
-        const link = document.createElement('a');
-        link.href = '#';
-        link.textContent = letter;
-        link.dataset.letter = letter;
-        letterContainer.appendChild(link);
-    });
-
-    console.log("सर्व सूची (Indices) तयार आहेत.");
-}
-
-// सूचीमधील एक आयटम (नाव + लोकेशन) बनवण्यासाठी मदतनीस (helper)
-function createIndexItem(text, loc) {
-    const div = document.createElement('div');
-    div.className = 'index-item';
-    div.dataset.letter = text[0]; // फिल्टरसाठी पहिले अक्षर
-    
-    const span = document.createElement('span');
-    span.textContent = text;
-    div.appendChild(span);
-    
-    div.appendChild(createLocationLink(loc));
-    return div;
-}
-
-// श्लोक क्रमांकाची (उदा. 1.1) क्लिक करण्यायोग्य लिंक बनवतो
-function createLocationLink(loc) {
-    const link = document.createElement('a');
-    link.className = 'location';
-    link.href = `#${loc.replace('.', 's')}`; // उदा. #1s1
-    link.textContent = `(${loc})`;
-    link.dataset.loc = loc; // 1.1
-    return link;
-}
-
-
-/**
- * सर्व बटणे (Theme, Font, Sidebar) सेट करतो.
- */
-function setupUIControls() {
-    // १. थीम टॉगल (Day/Night)
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-        document.documentElement.classList.toggle('light-mode');
-        document.documentElement.classList.toggle('dark-mode');
-    });
-
-    // २. फॉन्ट आकार
-    let scale = 1;
-    document.getElementById('font-increase').addEventListener('click', () => {
-        scale = Math.min(scale + 0.1, 1.5); // कमाल 1.5x
-        document.documentElement.style.setProperty('--font-scale-factor', scale);
-    });
-    document.getElementById('font-decrease').addEventListener('click', () => {
-        scale = Math.max(scale - 0.1, 0.8); // किमान 0.8x
-        document.documentElement.style.setProperty('--font-scale-factor', scale);
-    });
-
-    // ३. साईडबार टॉगल (उघडा/बंद करा)
-    document.getElementById('sidebar-toggle').addEventListener('click', () => {
-        document.querySelector('.app-container').classList.toggle('sidebar-collapsed');
-    });
-    
-    // ४. साईडबारमधील अध्याय सूची (TOC) टॉगल
-    document.getElementById('toc-toggle').addEventListener('click', () => {
-        document.querySelector('.chapter-list').classList.toggle('collapsed');
-    });
-}
-
-/**
- * सर्व लिंक्स (नेव्हिगेशन, अध्याय, सूची) सेट करतो.
- */
-function setupClickHandlers() {
-    const mainLinks = document.querySelectorAll('.main-nav .nav-link, .chapter-list .nav-link');
-    const sections = document.querySelectorAll('.content-section');
-    const chapterBoxes = document.getElementById('chapters-container');
-    const searchResults = document.getElementById('search-results');
+    // UI Elements
+    const body = document.body;
+    const appContainer = document.querySelector('.app-container');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const themeToggle = document.getElementById('theme-toggle');
+    const fontIncrease = document.getElementById('font-increase');
+    const fontDecrease = document.getElementById('font-decrease');
+    const tocContainer = document.getElementById('auto-toc-container');
+    const tocToggle = document.getElementById('toc-toggle');
+    const navLinks = document.querySelectorAll('.main-nav .nav-link');
+    const contentSections = document.querySelectorAll('.content-section');
+    const chaptersContainer = document.getElementById('chapters-container');
     const chapterPrompt = document.getElementById('chapter-prompt');
-
-    // सर्व नेव्हिगेशन लिंक्स
-    mainLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.dataset.target;
-            
-            // आधी सर्वांना 'active' मधून काढतो
-            mainLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active'); // फक्त या लिंकला 'active' करतो
-
-            // सर्व मुख्य विभाग (मुखपृष्ठ, पाठ, सूची) लपवतो
-            sections.forEach(sec => sec.classList.remove('active'));
-            // सर्व अध्याय बॉक्स लपवतो
-            chapterBoxes.querySelectorAll('.chapter-box').forEach(box => box.style.display = 'none');
-            
-            // सर्च रिझल्ट्स लपवतो
-            searchResults.style.display = 'none';
-            chapterPrompt.style.display = 'none';
-
-            if (targetId.startsWith('chapter-')) {
-                // जर अध्यायावर क्लिक केले असेल
-                document.getElementById('gita-path').classList.add('active'); // 'गीता पाठ' विभाग दाखवतो
-                document.getElementById(targetId).style.display = 'block'; // फक्त तो अध्याय दाखवतो
-                // 'गीता पाठ' लिंकलाही active करतो
-                document.querySelector('.main-nav a[data-target="gita-path"]').classList.add('active');
+    const tabLinks = document.querySelectorAll('.index-tabs .tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const letterLists = document.querySelectorAll('.letter-list');
+    const searchBar = document.getElementById('global-search-bar');
+    const searchResultsContainer = document.getElementById('search-results');
+    
+    let currentFontFactor = 1.0;
+    
+    // ---------------------------------
+    // 2. UI कंट्रोल्स (हे आधी लोड करा)
+    // ---------------------------------
+    function setupUIControls() {
+        // (Sidebar Toggle)
+        sidebarToggle.addEventListener('click', () => {
+            // Mobile var 'sidebar-open' vapra, Desktop var 'sidebar-collapsed'
+            if (window.innerWidth <= 768) {
+                appContainer.classList.toggle('sidebar-open');
             } else {
-                // जर मुख्य लिंकवर (मुखपृष्ठ, सूची) क्लिक केले असेल
-                document.getElementById(targetId).classList.add('active');
-                if (targetId === 'gita-path') {
-                    chapterPrompt.style.display = 'block'; // 'अध्याय निवडा' मेसेज दाखवतो
+                appContainer.classList.toggle('sidebar-collapsed');
+            }
+        });
+
+        // (Theme Toggle)
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark-mode');
+        });
+
+        // (Font Size)
+        fontIncrease.addEventListener('click', () => {
+            currentFontFactor = Math.min(currentFontFactor + 0.1, 1.5);
+            document.documentElement.style.setProperty('--font-scale-factor', currentFontFactor);
+        });
+
+        fontDecrease.addEventListener('click', () => {
+            currentFontFactor = Math.max(currentFontFactor - 0.1, 0.7);
+            document.documentElement.style.setProperty('--font-scale-factor', currentFontFactor);
+        });
+        
+        // (TOC Collapse)
+        tocToggle.addEventListener('click', () => {
+            tocToggle.classList.toggle('collapsed');
+            tocContainer.classList.toggle('collapsed');
+        });
+        
+        // (Lucide Icons)
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    }
+
+    // ---------------------------------
+    // 3. डेटा लोड करणे (Fetch Data)
+    // ---------------------------------
+    async function loadGitaData() {
+        try {
+            const response = await fetch('gita-data.html');
+            if (!response.ok) {
+                throw new Error(`gita-data.html file sapadli nahi (404 Error)`);
+            }
+            const htmlText = await response.text();
+            
+            // Data eka invisible div madhe taka
+            const rawDataContainer = document.getElementById('raw-gita-data');
+            if (!rawDataContainer) {
+                console.error('#raw-gita-data container sapadla nahi!');
+                return;
+            }
+            rawDataContainer.innerHTML = htmlText;
+            
+            // Data load zalyavarach parsing chalu kara
+            parseGitaData(rawDataContainer);
+            
+        } catch (error) {
+            console.error('Data load kartana error aala:', error);
+            chapterPrompt.innerHTML = `<p style="color: red;"><strong>Error:</strong> ${error.message}<br>Lutya 'gita-data.html' file upload keli aahe ka te tapaasa.</p>`;
+        }
+    }
+    
+    // ---------------------------------
+    // 4. डेटा पार्सिंग (Parse Data)
+    // ---------------------------------
+    function parseGitaData(container) {
+        const nodes = container.querySelectorAll('p[class^="p"]');
+        let currentChapter = null;
+        let currentVakta = "N/A";
+        let chapterIndex = 0;
+        let shlokaIndex = 0;
+        let currentShlokaData = {};
+
+        nodes.forEach(node => {
+            const className = node.className;
+            const text = node.textContent.trim();
+
+            if (!text) return;
+
+            // P1: Adhyay Title
+            if (className === 'p1') {
+                chapterIndex++;
+                shlokaIndex = 0;
+                const chapterId = `chapter-${chapterIndex}`;
+                currentChapter = {
+                    id: chapterId,
+                    title: text,
+                    shlokas: []
+                };
+                gitaData.chapters.push(currentChapter);
+                
+                // TOC (Sidebar List) madhe add kara
+                const tocLink = document.createElement('a');
+                tocLink.href = `#${chapterId}`;
+                tocLink.className = 'toc-link';
+                tocLink.textContent = text;
+                tocLink.dataset.target = chapterId;
+                tocContainer.appendChild(tocLink);
+            }
+            // P2: Vakta
+            else if (className === 'p2') {
+                currentVakta = text.replace(' उवाच', '');
+            }
+            // P3: Shloka Text (Start of shloka)
+            else if (className === 'p3' && currentChapter) {
+                // Adhicha shloka save kara (jarcha asel tar)
+                if (currentShlokaData.p3) {
+                    currentChapter.shlokas.push(currentShlokaData);
+                    indexShloka(currentShlokaData, chapterIndex, shlokaIndex, currentVakta);
+                }
+                
+                shlokaIndex++;
+                const location = `${chapterIndex}.${shlokaIndex}`;
+                currentShlokaData = {
+                    location: location,
+                    id: `c${chapterIndex}s${shlokaIndex}`,
+                    vakta: currentVakta,
+                    p3: text, // Shloka
+                    p11: '', // Paad
+                    p6: '',  // Anvay
+                    p9: ''   // Arth
+                };
+            }
+            // P11: Paad
+            else if (className === 'p11' && currentShlokaData.p3) {
+                currentShlokaData.p11 += (currentShlokaData.p11 ? '<br>' : '') + text;
+            }
+            // P6: Anvay
+            else if (className === 'p6' && currentShlokaData.p3) {
+                currentShlokaData.p6 = text;
+            }
+            // P9: Arth
+            else if (className === 'p9' && currentShlokaData.p3) {
+                currentShlokaData.p9 = text;
+            }
+        });
+
+        // Shevatcha shloka save kara
+        if (currentShlokaData.p3 && currentChapter) {
+            currentChapter.shlokas.push(currentShlokaData);
+            indexShloka(currentShlokaData, chapterIndex, shlokaIndex, currentVakta);
+        }
+        
+        // Data parse zalyavar UI banva
+        buildChapterHTML();
+        buildIndicesHTML();
+        setupClickHandlers(); // Ata click handlers setup kara
+        
+        // Loading message kadha
+        chapterPrompt.style.display = 'block'; // Default message dakhva
+    }
+    
+    // ---------------------------------
+    // 5. सूची बनवणे (Indexing Logic)
+    // ---------------------------------
+    function indexShloka(shloka, chapIdx, shlokaIdx, vakta) {
+        const location = shloka.location;
+        const firstChar = (text) => text[0] || '';
+
+        // 1. Shloka Suchi
+        const shlokaText = shloka.p3.split('।।')[0] + '...'; // Fakt pahili line
+        gitaData.indices.shloka.push({ text: shlokaText, location: location, firstChar: firstChar(shlokaText) });
+
+        // 2. Paad Suchi
+        if (shloka.p11) {
+            shloka.p11.split('<br>').forEach(paad => {
+                const paadText = paad.trim();
+                if (paadText) {
+                    gitaData.indices.paad.push({ text: paadText, location: location, firstChar: firstChar(paadText) });
+                }
+            });
+        }
+
+        // 3. Shabda Suchi
+        const words = (shloka.p3 || '').match(/[\u0900-\u097F\w']+/g) || [];
+        words.forEach(word => {
+            if (word.length < 2) return; // Lahan shabda sodun dya
+            if (!gitaData.indices.shabda.has(word)) {
+                gitaData.indices.shabda.set(word, []);
+            }
+            const locations = gitaData.indices.shabda.get(word);
+            if (!locations.includes(location)) { // Duplicate location nako
+                locations.push(location);
+            }
+        });
+        
+        // 4. Vakta Suchi
+        if (!gitaData.indices.vakta.has(vakta)) {
+            gitaData.indices.vakta.set(vakta, []);
+        }
+        const vaktaLocations = gitaData.indices.vakta.get(vakta);
+        if (!vaktaLocations.includes(location)) {
+            vaktaLocations.push(location);
+        }
+    }
+
+    // ---------------------------------
+    // 6. HTML बनवणे (Build HTML)
+    // ---------------------------------
+
+    // (Adhyay banva)
+    function buildChapterHTML() {
+        let html = '';
+        gitaData.chapters.forEach(chapter => {
+            html += `<div class="chapter-box" id="${chapter.id}">`;
+            html += `<h2 class="p1">${chapter.title}</h2>`;
+            
+            let currentVakta = '';
+            chapter.shlokas.forEach(shloka => {
+                if (shloka.vakta !== currentVakta) {
+                    html += `<h3 class="p2">${shloka.vakta} उवाच</h3>`;
+                    currentVakta = shloka.vakta;
+                }
+                
+                // Shloka number (e.g., ।।०१/०१।।) bold kara
+                const formattedShloka = shloka.p3.replace(/(।।[\s\S]*।।)/g, ' <span>$1</span>');
+                
+                html += `<div class="shloka-container" id="${shloka.id}">`;
+                html += `<p class="p3">${formattedShloka}</p>`;
+                
+                // (Pad, Anvay, Arth - Hide/Show nako)
+                if (shloka.p11) html += `<div class="shloka-detail-item p11"><strong>पाद:</strong><br>${shloka.p11}</div>`;
+                if (shloka.p6) html += `<div class="shloka-detail-item p6"><strong>अन्वय:</strong> ${shloka.p6}</div>`;
+                if (shloka.p9) html += `<div class="shloka-detail-item p9"><strong>अर्थ:</strong> ${shloka.p9}</div>`;
+                
+                html += `</div>`; // .shloka-container
+            });
+            html += `</div>`; // .chapter-box
+        });
+        chaptersContainer.innerHTML = html;
+    }
+
+    // (Suchi banva)
+    function buildIndicesHTML() {
+        const createItem = (text, location) => 
+            `<div class="index-item">
+                <span class="text">${text}</span>
+                <span class="location" data-loc="${location}">(${location})</span>
+            </div>`;
+        
+        // Shloka
+        document.getElementById('shloka-index').innerHTML = 
+            gitaData.indices.shloka.map(item => createItem(item.text, item.location)).join('');
+            
+        // Paad
+        document.getElementById('paad-index').innerHTML = 
+            gitaData.indices.paad.map(item => createItem(item.text, item.location)).join('');
+
+        // Shabda
+        let shabdaHtml = '';
+        const sortedShabda = [...gitaData.indices.shabda.keys()].sort();
+        sortedShabda.forEach(word => {
+            const locations = gitaData.indices.shabda.get(word);
+            const locHtml = locations.map(loc => `<span class="location" data-loc="${loc}">${loc}</span>`).join('');
+            shabdaHtml += `<div class="index-item">
+                                <span class="text">${word}</span>
+                                <div class="locations-list">${locHtml}</div>
+                           </div>`;
+        });
+        document.getElementById('shabda-index').innerHTML = shabdaHtml;
+        
+        // Vakta
+        let vaktaHtml = '';
+        [...gitaData.indices.vakta.keys()].forEach(vakta => {
+            const locations = gitaData.indices.vakta.get(vakta);
+            const locHtml = locations.map(loc => `<span class="location" data-loc="${loc}">${loc}</span>`).join('');
+            vaktaHtml += `<div class="index-item">
+                                <span class="vakta-name">${vakta}</span>
+                                <div class="vakta-shlokas">${locHtml}</div>
+                           </div>`;
+        });
+        document.getElementById('vakta-index').innerHTML = vaktaHtml;
+
+        // Akshar Suchi (Letter List)
+        buildLetterList(gitaData.indices.shloka.map(i => i.firstChar));
+    }
+    
+    // (Akshar Suchi banva)
+    function buildLetterList(firstChars) {
+        const uniqueChars = [...new Set(firstChars)].filter(c => c).sort();
+        const html = uniqueChars.map(char => `<a href="#" data-char="${char}">${char}</a>`).join('');
+        letterLists.forEach(list => list.innerHTML = html);
+        
+        // Akshar click handler
+        document.querySelectorAll('.letter-list a').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const char = e.target.dataset.char;
+                const currentList = e.target.closest('.content-section').querySelector('.tab-content.active');
+                const firstItem = currentList.querySelector(`.index-item .text`);
+                
+                // .text span aahe ka te check kara (shabda/vakta suchi sathi)
+                const items = currentList.querySelectorAll('.index-item');
+                let targetItem = null;
+                
+                for (let item of items) {
+                    const textEl = item.querySelector('.text, .vakta-name'); // Vegvegya suchi sathi
+                    if (textEl && textEl.textContent.trim().startsWith(char)) {
+                        targetItem = item;
+                        break;
+                    }
+                }
+                
+                if (targetItem) {
+                    currentList.scrollTo({
+                        top: targetItem.offsetTop - currentList.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    }
+
+    // ---------------------------------
+    // 7. क्लिक हँडलर्स (Click Handlers)
+    // ---------------------------------
+    function setupClickHandlers() {
+        
+        // (Main Navigation)
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.dataset.target;
+                
+                // Section badla
+                contentSections.forEach(sec => sec.classList.toggle('active', sec.id === targetId));
+                
+                // Link 'active' kara
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Search results lapva
+                searchResultsContainer.style.display = 'none';
+                searchBar.value = '';
+                
+                // Mobile var sidebar band kara
+                if (window.innerWidth <= 768) {
+                    appContainer.classList.remove('sidebar-open');
+                }
+            });
+        });
+
+        // (TOC - Adhyay Links)
+        tocContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('toc-link')) {
+                e.preventDefault();
+                const targetId = e.target.dataset.target;
+                
+                // 'Gita Path' tab var ja
+                document.querySelector('.nav-link[data-target="gita-path"]').click();
+                
+                // Sarva adhyay lapva, fakt ha dakhva
+                document.querySelectorAll('.chapter-box').forEach(box => {
+                    box.classList.toggle('active', box.id === targetId);
+                });
+                chapterPrompt.style.display = 'none';
+                
+                // TOC link 'active' kara
+                document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // Mobile var sidebar band kara
+                if (window.innerWidth <= 768) {
+                    appContainer.classList.remove('sidebar-open');
                 }
             }
+        });
 
-            // मोबाईलवर लिंक क्लिक केल्यावर साईडबार आपोआप बंद करतो
-            if (window.innerWidth < 768) {
-                document.querySelector('.app-container').classList.add('sidebar-collapsed');
+        // (Suchi Tabs)
+        tabLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const targetIndex = link.dataset.index;
+                
+                // Tab link 'active' kara
+                tabLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Tab content 'active' kara
+                tabContents.forEach(content => {
+                    content.classList.toggle('active', content.id === `${targetIndex}-index`);
+                });
+                
+                // Navin Akshar Suchi banva
+                let firstChars = [];
+                if (targetIndex === 'shloka') firstChars = gitaData.indices.shloka.map(i => i.firstChar);
+                else if (targetIndex === 'paad') firstChars = gitaData.indices.paad.map(i => i.firstChar);
+                else if (targetIndex === 'shabda') firstChars = [...gitaData.indices.shabda.keys()].sort().map(s => s[0]);
+                else if (targetIndex === 'vakta') firstChars = [...gitaData.indices.vakta.keys()].sort().map(s => s[0]);
+                
+                buildLetterList(firstChars);
+            });
+        });
+
+        // (Location Click [Suchi/Search madhun])
+        body.addEventListener('click', (e) => {
+            if (e.target.classList.contains('location')) {
+                e.preventDefault();
+                const location = e.target.dataset.loc;
+                mapsToShloka(location);
             }
         });
-    });
-
-    // सूचीमधील लोकेशन लिंकवर (उदा. 1.1) क्लिक हाताळणे
-    document.body.addEventListener('click', (e) => {
-        if (e.target.classList.contains('location')) {
-            e.preventDefault();
-            const loc = e.target.dataset.loc; // उदा. "1.1"
-            if (loc) {
-                MapsToShloka(loc);
-            }
-        }
-    });
-}
-
-/**
- * 'गीता सूची' विभागातील टॅब आणि अक्षर-फिल्टर सेट करतो.
- */
-function setupSuchiControls() {
-    const tabLinks = document.querySelectorAll('.tab-link');
-    const tabContents = document.querySelectorAll('.tab-content');
-    const letterList = document.querySelector('.letter-list');
-
-    // १. टॅब बदलणे (श्लोक, पाद, शब्द, वक्ता)
-    tabLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            const targetIndex = link.dataset.index;
-            
-            tabLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            
-            tabContents.forEach(c => c.classList.remove('active'));
-            document.getElementById(`${targetIndex}-index`).classList.add('active');
-            
-            // फिल्टर रीसेट करतो
-            filterIndexByLetter(null); // सर्व दाखवतो
-            letterList.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-        });
-    });
-
-    // २. अक्षर-फिल्टर (Letter List)
-    letterList.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (e.target.tagName === 'A') {
-            const letter = e.target.dataset.letter;
-            
-            // जर आधीच active असेल, तर फिल्टर काढतो
-            if (e.target.classList.contains('active')) {
-                e.target.classList.remove('active');
-                filterIndexByLetter(null); // सर्व दाखवतो
-            } else {
-                letterList.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-                e.target.classList.add('active');
-                filterIndexByLetter(letter); // फिल्टर करतो
-            }
-        }
-    });
-}
-
-// अक्षर-फिल्टरचे मुख्य लॉजिक
-function filterIndexByLetter(letter) {
-    const activeTabContent = document.querySelector('.tab-content.active');
-    if (!activeTabContent) return;
-    
-    const items = activeTabContent.querySelectorAll('[data-letter]');
-    
-    items.forEach(item => {
-        // जर letter = null (रीसेट), किंवा आयटमचे अक्षर जुळले, तर दाखवतो
-        if (!letter || item.dataset.letter === letter) {
-            item.style.display = ''; // CSS नुसार (flex/block)
-        } else {
-            item.style.display = 'none'; // लपवतो
-        }
-    });
-}
-
-
-/**
- * सूची किंवा सर्चमधून श्लोकावर नेव्हिगेट करतो.
- * @param {string} loc - श्लोक क्रमांक (उदा. "1.1")
- */
-function MapsToShloka(loc) {
-    const [chapter, shloka] = loc.split('.');
-    const chapterId = `chapter-${chapter}`;
-    const shlokaId = `c${chapter}s${shloka}`;
-
-    // साईडबार लिंक्स 'active' करतो
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    document.querySelector(`.main-nav a[data-target="gita-path"]`).classList.add('active');
-    const chapterLink = document.querySelector(`.chapter-list a[data-target="${chapterId}"]`);
-    if (chapterLink) {
-        chapterLink.classList.add('active');
-    }
-    
-    // 'गीता पाठ' विभाग दाखवतो
-    document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById('gita-path').classList.add('active');
-    
-    // सर्व अध्याय बॉक्स लपवतो
-    document.querySelectorAll('.chapter-box').forEach(box => box.style.display = 'none');
-    
-    // सर्च रिझल्ट्स लपवतो
-    document.getElementById('search-results').style.display = 'none';
-    
-    // फक्त योग्य अध्याय दाखवतो
-    const targetChapterBox = document.getElementById(chapterId);
-    if (targetChapterBox) {
-        targetChapterBox.style.display = 'block';
         
-        // योग्य श्लोकापर्यंत स्क्रोल करतो
-        const targetShloka = document.getElementById(shlokaId);
-        if (targetShloka) {
-            targetShloka.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // (Global Search)
+        searchBar.addEventListener('input', (e) => {
+            performGlobalSearch(e.target.value);
+        });
+    }
+
+    // ---------------------------------
+    // 8. मुख्य कार्यपद्धती (Functions)
+    // ---------------------------------
+    
+    // (Shloka paryant scroll karne)
+    function mapsToShloka(location) { // e.g., "1.1"
+        const [chapIdx, shlokaIdx] = location.split('.');
+        const chapterId = `chapter-${chapIdx}`;
+        const shlokaId = `c${chapIdx}s${shlokaIdx}`;
+
+        // 1. 'Gita Path' tab var ja
+        document.querySelector('.nav-link[data-target="gita-path"]').click();
+        
+        // 2. Yogya adhyay dakhva
+        document.querySelectorAll('.chapter-box').forEach(box => {
+            box.classList.toggle('active', box.id === chapterId);
+        });
+        chapterPrompt.style.display = 'none';
+        
+        // 3. Yogya TOC link 'active' kara
+        document.querySelectorAll('.toc-link').forEach(l => {
+            l.classList.toggle('active', l.dataset.target === chapterId);
+        });
+
+        // 4. Shloka paryant scroll kara
+        const shlokaElement = document.getElementById(shlokaId);
+        if (shlokaElement) {
+            // Scroll karnyaadhi highlight class kadha (jar adhi asel tar)
+            document.querySelectorAll('.shloka-container.highlight').forEach(el => el.classList.remove('highlight'));
             
-            // क्षणभर हायलाईट करतो
-            targetShloka.classList.add('highlight');
+            // Scroll
+            const contentScrollArea = document.querySelector('.content-scroll-area');
+            contentScrollArea.scrollTo({
+                top: shlokaElement.offsetTop - contentScrollArea.offsetTop - varToNum('--header-height'), // Header chya khali
+                behavior: 'smooth'
+            });
+            
+            // Highlight kara
+            shlokaElement.classList.add('highlight');
+            // Thodya velane highlight kadha
             setTimeout(() => {
-                targetShloka.classList.remove('highlight');
-            }, 1500); // 1.5 सेकंद
-        } else {
-            console.warn(`${shlokaId} हा श्लोक ID सापडला नाही.`);
+                shlokaElement.classList.remove('highlight');
+            }, 1500);
         }
-    } else {
-        console.warn(`${chapterId} हा अध्याय ID सापडला नाही.`);
+    }
+    
+    // (Global Search)
+    function performGlobalSearch(query) {
+        query = query.trim().toLowerCase();
+        
+        if (query.length < 2) {
+            searchResultsContainer.style.display = 'none';
+            searchResultsContainer.innerHTML = '';
+            // Jar search bar rikami zali tar parat adhyay dakhva
+            if (document.querySelector('.chapter-box.active')) {
+                chapterPrompt.style.display = 'none';
+            } else {
+                chapterPrompt.style.display = 'block';
+            }
+            return;
+        }
+
+        let resultsHtml = '';
+        let count = 0;
+        
+        const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        
+        gitaData.chapters.forEach(chapter => {
+            chapter.shlokas.forEach(shloka => {
+                // Shlok, Paad, Anvay, Arth - saglyat shodha
+                const textToSearch = [shloka.p3, shloka.p11, shloka.p6, shloka.p9].join(' ');
+                
+                if (textToSearch.toLowerCase().includes(query)) {
+                    count++;
+                    // Matched shlok dakhva (p3)
+                    const highlightedText = shloka.p3.replace(regex, '<strong>$&</strong>');
+                    resultsHtml += `
+                        <div class="search-result-item">
+                            <span class="location" data-loc="${shloka.location}">(${shloka.location})</span>
+                            <p>${highlightedText}</p>
+                        </div>`;
+                }
+            });
+        });
+
+        if (count > 0) {
+            searchResultsContainer.innerHTML = `<h4>"${query}" साठी ${count} परिणाम सापडले:</h4>` + resultsHtml;
+        } else {
+            searchResultsContainer.innerHTML = `<h4>"${query}" साठी काहीही सापडले नाही.</h4>`;
+        }
+        
+        searchResultsContainer.style.display = 'block';
+        chapterPrompt.style.display = 'none'; // Prompt lapva
+        document.querySelectorAll('.chapter-box').forEach(box => box.classList.remove('active')); // Adhyay lapva
+    }
+    
+    // (Helper Function)
+    function varToNum(varName) {
+        return parseInt(getComputedStyle(document.documentElement).getPropertyValue(varName), 10) || 0;
     }
 
-    // मोबाईलवर साईडबार बंद करतो
-    if (window.innerWidth < 768) {
-        document.querySelector('.app-container').classList.add('sidebar-collapsed');
-    }
-}
+    // ---------------------------------
+    // 9. ॲप सुरू करा (Initialize)
+    // ---------------------------------
+    
+    // 1. UI controls (sidebar, theme) *laglich* chalu kara
+    setupUIControls();
+    
+    // 2. Gita data *nantar* load kara
+    loadGitaData();
 
-// TODO: ग्लोबल सर्च फंक्शन (सध्या लागू केलेले नाही)
-document.getElementById('global-search-bar').addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-    // इथे सर्च लॉजिक टाकावे लागेल.
-    // console.log("Searching for:", query);
 });
 
 
