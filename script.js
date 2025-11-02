@@ -1,4 +1,5 @@
 // ३. JavaScript (पानाची कार्यपद्धती) ⚙️
+// UPDATED for p1/p2/p3/p11/p6/p9 structure
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- Global Variables ---
@@ -47,9 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
     }
 
-    // --- 2. Data Parsing (UPDATED for Hide/Show Details) ---
+    // --- 2. Data Parsing (UPDATED for p3/p11/p6/p9 structure) ---
     function parseGitaData() {
-        console.log("Parsing Gita data...");
+        console.log("Parsing Gita data with new structure (p1/p2/p3/p11/p6/p9)...");
         const rawDataContainer = document.getElementById('raw-gita-data');
         if (!rawDataContainer) {
             console.error("Fatal Error: #raw-gita-data container not found.");
@@ -60,11 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentChapter = null;
         let currentSpeaker = "N/A";
         let chapterIndex = 0;
-        let shlokaBuffer = ""; // To combine p3 lines
         
         // These track the *current* shloka being built
         let currentShlokaContainer = null;
         let currentShlokaDetailsDiv = null;
+        let currentShlokaData = null; // Store last shloka data for p11
 
         nodes.forEach(node => {
             // Check for element nodes only
@@ -101,9 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentChapter.el = chapterBox;
                 gitaPathContainer.appendChild(chapterBox);
                 
-                shlokaBuffer = "";
-                currentShlokaContainer = null; // New chapter, reset shloka
+                currentShlokaContainer = null;
                 currentShlokaDetailsDiv = null;
+                currentShlokaData = null;
 
             } else if (tagName === 'p' && className === 'p2') { // 2. Speaker
                 if (!currentChapter) return;
@@ -116,84 +117,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 speakerEl.textContent = currentSpeaker;
                 currentChapter.el.appendChild(speakerEl);
 
-                currentShlokaContainer = null; // New speaker, reset shloka
+                currentShlokaContainer = null;
                 currentShlokaDetailsDiv = null;
+                currentShlokaData = null;
                 
             } else if (tagName === 'p' && className === 'p3') { // 3. Shloka
                 if (!currentChapter) return;
 
-                // Append current line to buffer
-                let lineHtml = node.innerHTML;
-                if (!lineHtml.includes('।।')) { // Not the last line
-                   lineHtml = lineHtml.replace(/।\s*$/, '।<br>');
-                }
-                shlokaBuffer += lineHtml + " "; // Add space between lines
-
-                // Check if this is the end of the shloka (contains number)
-                const numberMatch = shlokaBuffer.match(/।।(\d{2})\/(\d{2})।।/);
+                const shlokaHtml = node.innerHTML;
+                
+                // Check for shloka number
+                const numberMatch = shlokaHtml.match(/।।(\d{2})\/(\d{2})।।/);
                 if (numberMatch) {
                     const chapterNum = parseInt(numberMatch[1], 10);
                     const shlokaNum = parseInt(numberMatch[2], 10);
                     
                     const location = `${chapterNum}.${shlokaNum}`;
                     const shlokaId = `c${chapterNum}s${shlokaNum}`;
-                    const fullHtml = shlokaBuffer.replace(/।।(\d{2})\/(\d{2})।।/, ` ।।${shlokaNum}।।`);
+                    const fullHtml = shlokaHtml.replace(/।।(\d{2})\/(\d{2})।।/, ` ।।${shlokaNum}।।`);
                     
                     // Cleaned text for search and indices
-                    const shlokaText = shlokaBuffer
-                        .replace(/<br>/gi, ' ')
-                        .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '')
+                    const shlokaText = node.textContent
                         .replace(/।।(\d{2})\/(\d{2})।।/, ' ')
                         .replace(/।/g, ' । ').replace(/।।/g, ' ।। ')
                         .replace(/\s+/g, ' ').trim();
 
                     // Store shloka data
-                    const shlokaData = {
+                    currentShlokaData = { // *** SET currentShlokaData ***
                         text: shlokaText, html: fullHtml, location: location,
                         id: shlokaId, chapterNum: chapterNum, speaker: currentSpeaker
                     };
-                    currentChapter.shlokas.push(shlokaData);
-                    gitaData.allShlokas.push(shlokaData);
+                    currentChapter.shlokas.push(currentShlokaData);
+                    gitaData.allShlokas.push(currentShlokaData);
                     
-                    // ---** NEW: Create Shloka Container **---
+                    // --- Create Shloka Container HTML ---
                     currentShlokaContainer = document.createElement('div');
                     currentShlokaContainer.className = 'shloka-container';
                     
-                    // Add shloka to container
                     const shlokaEl = document.createElement('p');
-                    shlokaEl.className = 'p6'; // Use p6 class for styling
+                    shlokaEl.className = 'p6'; // Use p6 class for STYLING
                     shlokaEl.id = shlokaId;
                     shlokaEl.innerHTML = fullHtml;
                     currentShlokaContainer.appendChild(shlokaEl);
 
-                    // Add Toggle Button
                     const toggleBtn = document.createElement('button');
                     toggleBtn.className = 'toggle-details';
                     toggleBtn.innerHTML = `<i data-lucide="chevron-down"></i> अधिक माहिती`;
                     currentShlokaContainer.appendChild(toggleBtn);
                     
-                    // Add Details Div (initially hidden)
                     currentShlokaDetailsDiv = document.createElement('div');
                     currentShlokaDetailsDiv.className = 'shloka-details';
                     currentShlokaContainer.appendChild(currentShlokaDetailsDiv);
                     
-                    // Add the whole container to the chapter box
                     currentChapter.el.appendChild(currentShlokaContainer);
-                    // ---** END NEW **---
+                    // --- End HTML Creation ---
 
-                    // Populate Indices (as before)
+                    // --- Populate Indices ---
+                    // 1. Shlok Suchi (from p3)
                     const firstLine = shlokaText.split('।')[0] + '।';
                     const firstLetter = firstLine.charAt(0);
                     if (firstLine.trim()) {
                         gitaData.indices.shloka.push({ text: firstLine, location: location, firstLetter: firstLetter });
                     }
-                    const paads = fullHtml.split('<br>');
-                    paads.forEach(paad => {
-                        const cleanPaad = paad.replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '').replace(/।।.*?।।/, '').replace(/।/g, '').trim();
-                        if (cleanPaad) {
-                            gitaData.indices.paad.push({ text: cleanPaad, location: location, firstLetter: cleanPaad.charAt(0) });
-                        }
-                    });
+                    // 2. Shabda Suchi (from p3)
                     const words = shlokaText.replace(/।|॥|[,.;?!]/g, ' ').split(/\s+/);
                     words.forEach(word => {
                         if (word && word.length > 1) {
@@ -202,20 +188,35 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (!locations.includes(location)) locations.push(location);
                         }
                     });
+                    // 3. Vakta Suchi (from p2)
                     gitaData.indices.vakta.push({ text: currentSpeaker, location: location, firstLetter: currentSpeaker.charAt(0) });
-
-                    shlokaBuffer = ""; // Reset buffer for next shloka
+                    // *Paad Suchi is populated by p11*
                 }
             
-            // ---** NEW: Capture Details **---
-            } else if ((className === 'p6' || className === 'p7') && currentShlokaDetailsDiv) {
-                // Only capture Anvaya (p6) and Artha (p7)
+            } else if (tagName === 'p' && className === 'p11') { // 4. Paad (for Paad Suchi)
+                if (!currentShlokaData) return; // Must follow a shloka
+                
+                const paadText = node.textContent.trim();
+                const location = currentShlokaData.location; // Get location from last shloka
+                
+                if (paadText) {
+                    gitaData.indices.paad.push({ text: paadText, location: location, firstLetter: paadText.charAt(0) });
+                }
+
+            } else if (tagName === 'p' && className === 'p6') { // 5. Anvay (for Details)
+                if (!currentShlokaDetailsDiv) return; // Must be inside a shloka container
+                
                 const detailEl = node.cloneNode(true);
-                detailEl.className = 'shloka-detail-item ' + className;
+                detailEl.className = 'shloka-detail-item p6'; // Add class for styling
+                currentShlokaDetailsDiv.appendChild(detailEl);
+
+            } else if (tagName === 'p' && className === 'p9') { // 6. Arth (for Details)
+                if (!currentShlokaDetailsDiv) return; // Must be inside a shloka container
+                
+                const detailEl = node.cloneNode(true);
+                detailEl.className = 'shloka-detail-item p9'; // Add class for styling
                 currentShlokaDetailsDiv.appendChild(detailEl);
             }
-            // We ignore p4, p5 from raw data in the details section for brevity
-            // ---** END NEW **---
         });
         
         // 5. Sort Indices (as before)
@@ -568,4 +569,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Run ---
     init();
 });
+
 
