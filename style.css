@@ -151,6 +151,10 @@ a:hover {
                 width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     z-index: 100;
     box-shadow: 2px 0 15px var(--shadow-color);
+    
+    /* ---** HE LIST ADD KARA **--- */
+    /* Lihilela content baher disu naye mhanun */
+    overflow-x: hidden; 
 }
 
 .sidebar-header {
@@ -764,5 +768,6 @@ body.light-mode .moon-icon { display: none; }
         border-radius: var(--border-radius-small);
     }
 }
+
 
 
