@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>💎 संपूर्ण गीता ॲप</title>
-    <!-- नवीन स्टाईल फाईल लिंक -->
+    <!-- ही लिंक 'GitaStyle.css' (Capital S) ला शोधते -->
     <link rel="stylesheet" href="GitaStyle.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
-    <!-- !!! हा div रिकामा असणे महत्त्वाचे आहे. JavaScript हा डेटा 'gita-data.html' मधून भरेल. !!! -->
+    <!-- JavaScript हा डेटा 'gita-data.html' मधून भरेल -->
     <div id="raw-gita-data" style="display: none;"></div>
 
-    <!-- बाकी सर्व HTML स्ट्रक्चर (साईडबार, कंटेंट) जसेच्या तसे -->
+    <!-- (बाकी सर्व HTML स्ट्रक्चर जसेच्या तसे) -->
     <div class="app-container">
         <!-- (साईडबार) -->
         <aside class="sidebar">
-            <!-- ... (साईडबारचा सर्व HTML कोड) ... -->
              <header class="sidebar-header">
                 <h1><i data-lucide="gem"></i> गीता</h1>
             </header>
@@ -91,7 +90,6 @@
 
                 <!-- विभाग ३: गीता सूची -->
                 <section id="gita-suchi" class="content-section">
-                    <!-- ... (सूचीचा सर्व HTML कोड) ... -->
                     <div class="index-tabs">
                         <button class="tab-link active" data-index="shloka"><i data-lucide="book-text"></i> श्लोक सूची</button>
                         <button class="tab-link" data-index="paad"><i data-lucide="pilcrow"></i> पाद सूची</button>
@@ -115,7 +113,7 @@
         </main>
     </div>
     
-    <!-- नवीन लॉजिक फाईल लिंक -->
+    <!-- ही लिंक 'GitaLogic.js' (Capital L) ला शोधते -->
     <script src="GitaLogic.js"></script>
     <script>
         // Lucide icons लोड करा
