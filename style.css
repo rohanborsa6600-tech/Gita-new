@@ -537,10 +537,14 @@ body.light-mode .moon-icon { display: none; }
     font-style: italic;
 }
 
-.shloka-detail-item.p7 { /* Artha */
+/* ---** HA BADAL KARA **--- */
+/* .shloka-detail-item.p7 la .p9 kara */
+.shloka-detail-item.p9 { /* Artha */
     color: var(--text-color);
     font-weight: 500;
 }
+/* ---** BADAL ITHE SAMPEL **--- */
+
 /* --- End Hide/Show --- */
 
 /* श्लोक हायलाईट ॲनिमेशन */
@@ -768,6 +772,7 @@ body.light-mode .moon-icon { display: none; }
         border-radius: var(--border-radius-small);
     }
 }
+
 
 
 
