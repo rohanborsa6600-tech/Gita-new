@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>💎 संपूर्ण गीता ॲप</title>
     
-    <!-- === बदल इथे आहे === -->
-    <!-- लिंक आता 'gitastyle.css' (small) ला शोधते -->
+    <!-- Link 'gitastyle.css' (small) la shodhte -->
     <link rel="stylesheet" href="gitastyle.css">
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
-    <!-- JavaScript हा डेटा 'gita-data.html' मधून भरेल -->
+    <!-- JavaScript ha data 'gita-data.html' madhun bharel -->
     <div id="raw-gita-data" style="display: none;"></div>
 
-    <!-- (बाकी सर्व HTML स्ट्रक्चर जसेच्या तसे) -->
+    <!-- (App Container) -->
     <div class="app-container">
-        <!-- (साईडबार) -->
+        <!-- (Sidebar) -->
         <aside class="sidebar">
              <header class="sidebar-header">
                 <h1><i data-lucide="gem"></i> गीता</h1>
@@ -52,7 +51,7 @@
                     <i data-lucide="chevron-down" class="toc-chevron"></i>
                 </h2>
                 <div id="auto-toc-container">
-                    <!-- JavaScript ही यादी भरेल -->
+                    <!-- JavaScript hi yaadi bharel -->
                 </div>
             </div>
             <footer class="footer">
@@ -60,7 +59,7 @@
             </footer>
         </aside>
 
-        <!-- (मुख्य कंटेंट) -->
+        <!-- (Main Content) -->
         <main class="content-area">
             <header class="content-header">
                 <button id="sidebar-toggle" title="साईडबार उघडा/बंद करा">
@@ -73,25 +72,25 @@
             </header>
             
             <div class="content-scroll-area">
-                <!-- विभाग १: मुखपृष्ठ -->
+                <!-- Section 1: Cover Page -->
                 <section id="cover-page" class="content-section active">
                     <h1>💎 संपूर्ण गीता ॲप</h1>
                     <p>साईडबारमधून अध्याय किंवा सूची निवडा.</p>
                 </section>
 
-                <!-- विभाग २: गीता पाठ -->
+                <!-- Section 2: Gita Path -->
                 <section id="gita-path" class="content-section">
-                    <!-- JavaScript हा भाग भरेल -->
+                    <!-- JS ha bhag bharel -->
                     <div id="search-results"></div>
                     <div id="chapter-prompt">
                         <p>कृपया डावीकडील 'अध्याय सूची' मधून एक अध्याय निवडा.</p>
                     </div>
                     <div id="chapters-container">
-                        <!-- JS इथे अध्याय (.chapter-box) टाकेल -->
+                        <!-- JS ithe adhyay (.chapter-box) takel -->
                     </div>
                 </section>
 
-                <!-- विभाग ३: गीता सूची -->
+                <!-- Section 3: Gita Suchi -->
                 <section id="gita-suchi" class="content-section">
                     <div class="index-tabs">
                         <button class="tab-link active" data-index="shloka"><i data-lucide="book-text"></i> श्लोक सूची</button>
@@ -103,7 +102,7 @@
                     <div class="letter-list-container">
                         <i data-lucide="filter"></i>
                         <div class="letter-list">
-                            <!-- JS ही अक्षरांची यादी भरेल -->
+                            <!-- JS hi aksharanchi yaadi bharel -->
                         </div>
                     </div>
 
@@ -116,13 +115,13 @@
         </main>
     </div>
     
-    <!-- === बदल इथे आहे === -->
-    <!-- लिंक आता 'gitalogic.js' (small) ला शोधते -->
+    <!-- Link 'gitalogic.js' (small) la shodhte -->
     <script src="gitalogic.js"></script>
     <script>
-        // Lucide icons लोड करा
+        // Lucide icons load kara
         lucide.createIcons();
     </script>
 </body>
 </html>
+
 
