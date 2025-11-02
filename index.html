@@ -1,126 +1,174 @@
 <!DOCTYPE html>
-<html lang="mr" class="dark-mode">
+<html lang="mr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💎 संपूर्ण गीता ॲप</title>
+    <title>💎गीता💎</title>
     
-    <!-- नवीन स्टाईल फाईल -->
+    <!-- (Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- (Hi CSS File Ahe) - Hi file 'style.css' ya navane load hoil -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide.js"></script>
+    <!-- (Icons sathi) - He icons load karel -->
+    <script src="https://unpkg.com/lucide-react/dist/lucide.min.js"></script>
+    
+    <!-- (Hi JS File Ahe) - Hi file 'script.js' ya navane load hoil -->
+    <script src="script.js"></script>
+
+    <style>
+        /* (Loading Error Pasun Vachavnyasathi) */
+        /* JS load honyapurvi, sidebar default laplela pahije */
+        @media (min-width: 769px) {
+            .app-container {
+                padding-left: 0;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .app-container.sidebar-collapsed .sidebar {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- JavaScript हा डेटा 'gita-data.html' मधून भरेल -->
+
+    <!-- (Adrushya Data - Ha rikami ahe, JS data bharel) -->
     <div id="raw-gita-data" style="display: none;"></div>
 
-    <!-- (App Container) -->
-    <div class="app-container">
-        <!-- (Sidebar) -->
+    <div class="app-container sidebar-collapsed">
+        
+        <!-- (Dava Sidebar) -->
         <aside class="sidebar">
-             <header class="sidebar-header">
-                <h1><i data-lucide="gem"></i> गीता</h1>
-            </header>
+            
+            <!-- Header -->
+            <div class="sidebar-header">
+                <h1><i data-lucide="gem"></i> <span>गीता</span></h1>
+            </div>
+
+            <!-- Controls (Theme/Font) -->
             <div class="sidebar-controls">
-                <button id="theme-toggle" title="थीम बदला (Day/Night)">
+                <button id="theme-toggle" title="Theme Badla">
                     <i data-lucide="sun" class="icon-sun"></i>
                     <i data-lucide="moon" class="icon-moon"></i>
                 </button>
-                <button id="font-decrease" title="फॉन्ट लहान करा">
+                <button id="font-decrease" title="Font Lahan Kara">
                     <i data-lucide="zoom-out"></i>
                 </button>
-                <button id="font-increase" title="फॉन्ट मोठा करा">
+                <button id="font-increase" title="Font Motha Kara">
                     <i data-lucide="zoom-in"></i>
                 </button>
             </div>
+
+            <!-- Mukhya Navigation -->
             <nav class="main-nav">
-                <a href="#cover-page" class="nav-link active" data-target="cover-page">
-                    <i data-lucide="home"></i> <span>मुखपृष्ठ</span>
+                <a href="#cover" class="nav-link active" data-target="cover-page">
+                    <i data-lucide="home"></i>
+                    <span>मुखपृष्ठ</span>
                 </a>
-                <a href="#gita-path" class="nav-link" data-target="gita-path">
-                    <i data-lucide="book-open"></i> <span>गीता पाठ</span>
+                <a href="#path" class="nav-link" data-target="gita-path">
+                    <i data-lucide="book-open"></i>
+                    <span>गीता पाठ</span>
                 </a>
-                <a href="#gita-suchi" class="nav-link" data-target="gita-suchi">
-                    <i data-lucide="list"></i> <span>गीता सूची</span>
+                <a href="#suchi" class="nav-link" data-target="gita-suchi">
+                    <i data-lucide="list"></i>
+                    <span>गीता सूची</span>
                 </a>
             </nav>
+
+            <!-- Adhyay Suchi (TOC) -->
             <div class="chapter-list">
                 <h2 id="toc-toggle">
-                    <span>अध्याय सूची</span>
+                    <span><i data-lucide="library"></i> अध्याय सूची</span>
                     <i data-lucide="chevron-down" class="toc-chevron"></i>
                 </h2>
                 <div id="auto-toc-container">
-                    <!-- JavaScript hi yaadi bharel -->
+                    <!-- JS ithe adhyay bharel -->
                 </div>
             </div>
-            <footer class="footer">
-                Made with <i data-lucide="gem" style="width:14px; height:14px;"></i> by ADX
-            </footer>
+
+            <!-- Footer -->
+            <div class="footer">
+                <span>Made with</span> <i data-lucide="gem" size="14"></i> <span>by ADX</span>
+            </div>
         </aside>
 
-        <!-- (Main Content) -->
+        <!-- (Ujava Content Area) -->
         <main class="content-area">
+            
+            <!-- Content Header (Search bar) -->
             <header class="content-header">
-                <button id="sidebar-toggle" title="साईडबार उघडा/बंद करा">
+                <button id="sidebar-toggle" title="Menu">
                     <i data-lucide="menu"></i>
                 </button>
                 <div class="search-container">
-                    <i data-lucide="search"></i>
+                    <i data-lucide="search" size="18"></i>
                     <input type="search" id="global-search-bar" placeholder="संपूर्ण गीतेत शोधा...">
                 </div>
             </header>
-            
+
+            <!-- Scrollable Content -->
             <div class="content-scroll-area">
-                <!-- Section 1: Cover Page -->
+                
+                <!-- (Section 1: Mukhprushth) -->
                 <section id="cover-page" class="content-section active">
                     <h1>💎 संपूर्ण गीता ॲप</h1>
-                    <p>साईडबारमधून अध्याय किंवा सूची निवडा.</p>
+                    <p>डावीकडील 'अध्याय सूची' मधून अध्याय निवडा, किंवा 'गीता सूची' उघडा.</p>
                 </section>
 
-                <!-- Section 2: Gita Path -->
+                <!-- (Section 2: Gita Path) -->
                 <section id="gita-path" class="content-section">
-                    <!-- JS ha bhag bharel -->
-                    <div id="search-results"></div>
+                    <div id="search-results" style="display: none;"></div>
                     <div id="chapter-prompt">
                         <p>कृपया डावीकडील 'अध्याय सूची' मधून एक अध्याय निवडा.</p>
                     </div>
                     <div id="chapters-container">
-                        <!-- JS ithe adhyay (.chapter-box) takel -->
+                        <!-- JS ithe adhyay/shlok bharel -->
                     </div>
                 </section>
 
-                <!-- Section 3: Gita Suchi -->
+                <!-- (Section 3: Gita Suchi) -->
                 <section id="gita-suchi" class="content-section">
+                    <!-- Tabs -->
                     <div class="index-tabs">
-                        <button class="tab-link active" data-index="shloka"><i data-lucide="book-text"></i> श्लोक सूची</button>
-                        <button class="tab-link" data-index="paad"><i data-lucide="pilcrow"></i> पाद सूची</button>
-                        <button class="tab-link" data-index="shabda"><i data-lucide="type"></i> शब्द सूची</button>
-                        <button class="tab-link" data-index="vakta"><i data-lucide="user-voice"></i> वक्ता सूची</button>
+                        <button class="tab-link active" data-index="shloka">
+                            <i data-lucide="book-text"></i> श्लोक सूची
+                        </button>
+                        <button class="tab-link" data-index="paad">
+                            <i data-lucide="pilcrow"></i> पाद सूची
+                        </button>
+                        <button class="tab-link" data-index="shabda">
+                            <i data-lucide="type"></i> शब्द सूची
+                        </button>
+                        <button class="tab-link" data-index="vakta">
+                            <i data-lucide="user-square"></i> वक्ता सूची
+                        </button>
                     </div>
 
+                    <!-- Akshar Suchi (Filter) -->
                     <div class="letter-list-container">
-                        <i data-lucide="filter"></i>
+                        <i data-lucide="filter" size="16"></i>
                         <div class="letter-list">
-                            <!-- JS hi aksharanchi yaadi bharel -->
+                            <!-- JS ithe akshare bharel -->
                         </div>
                     </div>
-
-                    <div id="shloka-index" class="tab-content active index-results"></div>
-                    <div id="paad-index" class="tab-content index-results"></div>
+                    
+                    <!-- Tab Content -->
+                    <div id="shloka-index" class="tab-content active index-results shloka-suchi"></div>
+                    <div id="paad-index" class="tab-content index-results paad-suchi"></div>
                     <div id="shabda-index" class="tab-content index-results shabda-suchi"></div>
                     <div id="vakta-index" class="tab-content index-results vakta-suchi"></div>
                 </section>
+
             </div>
         </main>
     </div>
-    
-    <!-- नवीन स्क्रिप्ट फाईल -->
-    <script src="script.js"></script>
-    <script>
-        // Lucide icons load kara
-        lucide.createIcons();
-    </script>
+
 </body>
 </html>
+
 
