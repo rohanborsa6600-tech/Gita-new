@@ -1,0 +1,689 @@
+/* --- GitaApp V3 CSS --- */
+/* (नवीन कमेंट्स-सहित स्टाईल फाईल) */
+
+/* --- १. मूळ व्हेरिएबल्स आणि फॉन्ट्स --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Mukta:wght@400;500;700&display=swap');
+
+:root {
+    /* फॉन्ट */
+    --font-ui: 'Poppins', sans-serif;
+    --font-text: 'Mukta', sans-serif;
+    
+    /* रंग (गडद थीम - डीफॉल्ट) */
+    --color-bg: #0d1a1f; /* गडद निळा/हिरवा */
+    --color-text: #e0e0e0; /* फिकट राखाडी */
+    --color-primary: #86efac; /* फिकट हिरवा (Celadon) */
+    --color-primary-glow: rgba(134, 239, 172, 0.3);
+    --color-secondary: #a7f3d0; /* आणखी फिकट हिरवा */
+    --color-border: rgba(134, 239, 172, 0.2);
+    --color-glass-bg: rgba(17, 24, 39, 0.6); /* गडद पारदर्शक */
+    --color-hover-bg: rgba(134, 239, 172, 0.1);
+    --color-scroll-thumb: #86efac;
+    --color-scroll-track: rgba(134, 239, 172, 0.1);
+
+    /* पार्श्वभूमी चित्र (रात्र) */
+    --bg-image: url('https://images.unsplash.com/photo-1472552944129-b035e9ea3744?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjU5N3wwfDF8c2VhcmNofDEzfHxzcGlyaXR1YWwlMjBuaWdodCUyMHNreXxlbnwwfHx8fDE3MTgxMDkyOTZ8MA&ixlib=rb-4.0.3&q=80&w=1080');
+
+    /* फॉन्ट आकार */
+    --font-scale-factor: 1;
+}
+
+/* प्रकाश (Light) थीम व्हेरिएबल्स */
+:root.light-mode {
+    --color-bg: #f3f9f7; /* खूप फिकट हिरवा */
+    --color-text: #1f2937; /* गडद राखाडी */
+    --color-primary: #10b981; /* गडद हिरवा */
+    --color-primary-glow: rgba(16, 185, 129, 0.3);
+    --color-secondary: #059669; /* आणखी गडद हिरवा */
+    --color-border: rgba(16, 185, 129, 0.2);
+    --color-glass-bg: rgba(255, 255, 255, 0.6); /* पांढरा पारदर्शक */
+    --color-hover-bg: rgba(16, 185, 129, 0.1);
+    --color-scroll-thumb: #10b981;
+    --color-scroll-track: rgba(16, 185, 129, 0.1);
+    
+    /* पार्श्वभूमी चित्र (दिवस) */
+    --bg-image: url('https://images.unsplash.com/photo-1542662562-74c2c57f7b32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjU5N3wwfDF8c2VhcmNofDEwfHxzZXJlbmUlMjBtb3VudGFpbnxlbnwwfHx8fDE3MTgxMDkyNjR8MA&ixlib=rb-4.0.3&q=80&w=1080');
+}
+
+/* --- २. मूळ सेटअप आणि पार्श्वभूमी --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-ui);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    /* पार्श्वभूमी चित्र */
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* पेजला स्क्रोल होऊ देत नाही */
+    transition: background-image 0.5s ease;
+}
+
+/* पार्श्वभूमी चित्रावर एक गडद/फिकट थर */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--color-bg);
+    opacity: 0.6; /* हा थर चित्राला अंधुक करतो */
+    z-index: -1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-text);
+    color: var(--color-secondary);
+    font-weight: 700;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+a:hover {
+    color: var(--color-secondary);
+    text-shadow: 0 0 8px var(--color-primary-glow);
+}
+
+button {
+    font-family: var(--font-ui);
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+/* --- ३. लिक्विड ग्लास इफेक्ट (मुख्य) --- */
+.glass-panel {
+    background-color: var(--color-glass-bg);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* --- ४. मुख्य लेआउट (App Container) --- */
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    --sidebar-width: 280px;
+    transition: padding-left 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- ५. साईडबार (डावी बाजू) --- */
+.sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    height: 100vh;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed; /* मोबाईलसाठी महत्त्वाचे */
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    transform: translateX(0);
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+                width 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    /* ग्लास इफेक्ट */
+    background-color: var(--color-glass-bg);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-right: 1px solid var(--color-border);
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    /* साईडबार बंद असताना मजकूर लपवतो */
+    overflow-x: hidden;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+}
+.sidebar-header h1 {
+    font-size: calc(1.5rem * var(--font-scale-factor));
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primary);
+}
+
+/* थीम आणि फॉन्ट बटणे */
+.sidebar-controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 99px; /* गोल बटणे */
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+.sidebar-controls button {
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    color: var(--color-secondary);
+}
+.sidebar-controls button:hover {
+    background-color: var(--color-hover-bg);
+    color: var(--color-primary);
+}
+/* Day/Night आयकॉन दाखवणे/लपवणे */
+.light-mode .icon-sun,
+.dark-mode .icon-moon { display: none; }
+
+/* मुख्य नेव्हिगेशन (मुखपृष्ठ, पाठ, सूची) */
+.main-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+.nav-link {
+    font-size: calc(1rem * var(--font-scale-factor));
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap; /* मजकूर एका ओळीत ठेवतो */
+}
+.nav-link:hover {
+    background-color: var(--color-hover-bg);
+}
+.nav-link.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+    font-weight: 600;
+    box-shadow: 0 4px 15px var(--color-primary-glow);
+}
+.nav-link.active i {
+    color: var(--color-bg); /* active लिंकमधील आयकॉनचा रंग */
+}
+
+/* अध्याय सूची */
+.chapter-list {
+    flex: 1; /* उरलेली जागा घेतो */
+    overflow-y: auto; /* गरज असल्यास स्क्रोल करतो */
+    padding-right: 0.5rem; /* स्क्रोलबारसाठी जागा */
+    margin-top: 0.5rem;
+    transition: max-height 0.3s ease-in-out;
+}
+.chapter-list h2 {
+    font-size: calc(0.9rem * var(--font-scale-factor));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+}
+.chapter-list h2:hover {
+    background-color: var(--color-hover-bg);
+}
+.chapter-list h2 .toc-chevron {
+    transition: transform 0.3s ease;
+}
+.chapter-list.collapsed #auto-toc-container {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+.chapter-list.collapsed .toc-chevron {
+    transform: rotate(-90deg);
+}
+
+#auto-toc-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-height: 500px; /* डीफॉल्ट उंची */
+    opacity: 1;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+#auto-toc-container .nav-link {
+    font-size: calc(0.9rem * var(--font-scale-factor));
+    padding: 0.5rem 1rem;
+    font-weight: 400;
+}
+
+/* साईडबार फूटर */
+.footer {
+    font-size: calc(0.8rem * var(--font-scale-factor));
+    color: var(--color-secondary);
+    opacity: 0.7;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    white-space: nowrap; /* मजकूर एका ओळीत ठेवतो */
+}
+
+/* --- ६. मुख्य कंटेंट (उजवी बाजू) --- */
+.content-header {
+    flex-shrink: 0;
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    /* ग्लास इफेक्ट */
+    background-color: var(--color-glass-bg);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--color-border);
+    z-index: 500;
+}
+
+/* साईडबार टॉगल बटण (☰) */
+#sidebar-toggle {
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex; /* मोबाईलवर दाखवण्यासाठी */
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+#sidebar-toggle:hover {
+    background-color: var(--color-hover-bg);
+}
+
+/* सर्च बार */
+.search-container {
+    flex: 1;
+    max-width: 600px;
+    position: relative;
+}
+.search-container i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-secondary);
+    opacity: 0.7;
+}
+#global-search-bar {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem; /* आयकॉनसाठी जागा */
+    border-radius: 99px; /* गोल कडा */
+    border: 1px solid var(--color-border);
+    background-color: rgba(0,0,0,0.1);
+    color: var(--color-text);
+    font-family: var(--font-ui);
+    font-size: calc(0.9rem * var(--font-scale-factor));
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+#global-search-bar:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary-glow);
+}
+
+/* कंटेंट स्क्रोल एरिया (मुख्य स्क्रोलिंग) */
+.content-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+.content-section {
+    display: none; /* डीफॉल्ट लपलेले */
+    animation: fadeIn 0.5s ease forwards;
+}
+.content-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- ७. गीता पाठ विभाग (Chapter Box) --- */
+.chapter-box, 
+#cover-page, 
+#gita-suchi,
+#search-results {
+    /* ग्लास पॅनेल */
+    padding: 2rem;
+    margin-bottom: 2rem;
+    background-color: var(--color-glass-bg);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.chapter-box h3 {
+    font-size: calc(1.8rem * var(--font-scale-factor));
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 1rem;
+    color: var(--color-primary);
+}
+
+#chapter-prompt p {
+    font-size: calc(1.1rem * var(--font-scale-factor));
+    text-align: center;
+    padding: 3rem;
+    color: var(--color-secondary);
+}
+
+/* श्लोक स्टाईल (p4 = वक्ता, p6 = श्लोक, इ.) */
+.p4 { /* वक्ता */
+    font-size: calc(1.1rem * var(--font-scale-factor));
+    font-weight: 700;
+    color: var(--color-secondary);
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+.p6 { /* श्लोक */
+    font-size: calc(1.3rem * var(--font-scale-factor));
+    font-family: var(--font-text);
+    font-weight: 500;
+    line-height: 2.2;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+/* श्लोक हायलाईट (जेव्हा सूचीवरून येतो) */
+.p6.highlight {
+    background-color: var(--color-hover-bg);
+    box-shadow: 0 0 15px var(--color-primary-glow);
+    transition: background-color 0.1s ease;
+}
+
+/* श्लोकाची अधिक माहिती (अन्वय p6, अर्थ p9) */
+.shloka-detail-item {
+    font-family: var(--font-text);
+    font-size: calc(1rem * var(--font-scale-factor));
+    line-height: 1.8;
+    padding-left: 2rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--color-border);
+}
+.p6-detail { /* अन्वय */
+    color: var(--color-secondary);
+    font-style: italic;
+}
+.p9 { /* अर्थ */
+    color: var(--color-text);
+    opacity: 0.9;
+    margin-bottom: 1.5rem; /* श्लोकांमधील अंतर */
+}
+
+
+/* --- ८. गीता सूची विभाग (Index) --- */
+.index-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--color-border);
+    margin-bottom: 1.5rem;
+}
+.tab-link {
+    font-size: calc(1rem * var(--font-scale-factor));
+    font-weight: 500;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px 10px 0 0;
+    border: 1px solid transparent;
+    border-bottom: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.tab-link:hover {
+    background-color: var(--color-hover-bg);
+}
+.tab-link.active {
+    background-color: var(--color-glass-bg); /* पॅनेलसारखा रंग */
+    border-color: var(--color-border);
+    color: var(--color-primary);
+    font-weight: 600;
+}
+.tab-link i {
+    width: 18px;
+    height: 18px;
+}
+
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* अक्षर-सूची (Filter) */
+.letter-list-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+.letter-list-container i {
+    color: var(--color-secondary);
+    padding: 0.5rem;
+}
+.letter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+.letter-list a {
+    font-size: calc(0.9rem * var(--font-scale-factor));
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.letter-list a:hover {
+    background-color: var(--color-hover-bg);
+}
+.letter-list a.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+}
+
+/* सूचीमधील आयटम (श्लोक, पाद, वक्ता) */
+.index-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    font-size: calc(0.95rem * var(--font-scale-factor));
+    font-family: var(--font-text);
+}
+.index-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.index-item:hover {
+    background-color: var(--color-hover-bg);
+    border-color: var(--color-border);
+}
+.index-item span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 1rem;
+}
+.location {
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+/* शब्द सूची (वेगळी स्टाईल) */
+.shabda-suchi {
+    grid-template-columns: 1fr; /* एक-कॉलम लेआउट */
+}
+.shabd-item {
+    display: flex;
+    flex-wrap: wrap; /* मोबाईलसाठी */
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.75rem 1rem;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 8px;
+    gap: 0.5rem 1rem;
+}
+.shabd-name {
+    font-size: calc(1rem * var(--font-scale-factor));
+    font-weight: 600;
+    color: var(--color-secondary);
+    flex-basis: 200px; /* शब्दासाठी किमान जागा */
+    flex-shrink: 0;
+}
+.shabd-locations {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+.shabd-locations .location {
+    font-size: calc(0.9rem * var(--font-scale-factor));
+    padding: 0.25rem 0.5rem;
+    background-color: var(--color-hover-bg);
+    border-radius: 4px;
+}
+
+/* --- ९. स्क्रोलबार स्टाईल --- */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-scroll-track);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-scroll-thumb);
+    border-radius: 10px;
+    border: 2px solid var(--color-scroll-track);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-secondary);
+}
+
+/* --- १०. रिस्पॉन्सिव्ह डिझाइन (मोबाईलसाठी) --- */
+@media (max-width: 768px) {
+    body {
+        /* मोबाईलवर फॉन्टचा आकार थोडा कमी करतो */
+        font-size: 15px; 
+    }
+    
+    .app-container {
+        padding-left: 0; /* साईडबारसाठी जागा सोडत नाही */
+    }
+
+    /* साईडबार (मोबाईलवर) */
+    .sidebar {
+        width: 280px; /* बंद असताना रुंदी */
+        transform: translateX(-280px); /* पूर्णपणे लपलेला */
+        z-index: 2000; /* सर्वात वर */
+        /* बंद असताना मजकूर लपवतो */
+        overflow-x: hidden;
+    }
+
+    /* साईडबार उघडलेला असताना (collapsed क्लास नसताना) */
+    .app-container:not(.sidebar-collapsed) .sidebar {
+        transform: translateX(0);
+        box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+    }
+    
+    /* साईडबार उघडल्यावर, मागचा कंटेंट अंधुक करतो */
+    .app-container:not(.sidebar-collapsed)::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 1900; /* साईडबारच्या मागे */
+    }
+    
+    /* साईडबार बंद (collapsed) असताना (डीफॉल्ट) */
+    .app-container.sidebar-collapsed .sidebar {
+        transform: translateX(-280px);
+    }
+    
+    .content-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .content-scroll-area {
+        padding: 1rem;
+    }
+
+    .chapter-box, 
+    #cover-page, 
+    #gita-suchi,
+    #search-results {
+        padding: 1rem;
+    }
+    
+    .chapter-box h3 {
+        font-size: calc(1.5rem * var(--font-scale-factor));
+    }
+    
+    .p6 { /* श्लोक */
+        font-size: calc(1.1rem * var(--font-scale-factor));
+        line-height: 2;
+    }
+
+    .shabd-item {
+        flex-direction: column; /* शब्द आणि लोकेशन एकाखाली एक */
+        align-items: flex-start;
+    }
+}
+
+
