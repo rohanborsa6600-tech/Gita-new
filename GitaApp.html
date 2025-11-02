@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="mr" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💎 संपूर्ण गीता ॲप</title>
+    <!-- नवीन स्टाईल फाईल लिंक -->
+    <link rel="stylesheet" href="GitaStyle.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <!-- !!! हा div रिकामा असणे महत्त्वाचे आहे. JavaScript हा डेटा 'gita-data.html' मधून भरेल. !!! -->
+    <div id="raw-gita-data" style="display: none;"></div>
+
+    <!-- बाकी सर्व HTML स्ट्रक्चर (साईडबार, कंटेंट) जसेच्या तसे -->
+    <div class="app-container">
+        <!-- (साईडबार) -->
+        <aside class="sidebar">
+            <!-- ... (साईडबारचा सर्व HTML कोड) ... -->
+             <header class="sidebar-header">
+                <h1><i data-lucide="gem"></i> गीता</h1>
+            </header>
+            <div class="sidebar-controls">
+                <button id="theme-toggle" title="थीम बदला (Day/Night)">
+                    <i data-lucide="sun" class="icon-sun"></i>
+                    <i data-lucide="moon" class="icon-moon"></i>
+                </button>
+                <button id="font-decrease" title="फॉन्ट लहान करा">
+                    <i data-lucide="zoom-out"></i>
+                </button>
+                <button id="font-increase" title="फॉन्ट मोठा करा">
+                    <i data-lucide="zoom-in"></i>
+                </button>
+            </div>
+            <nav class="main-nav">
+                <a href="#cover-page" class="nav-link active" data-target="cover-page">
+                    <i data-lucide="home"></i> <span>मुखपृष्ठ</span>
+                </a>
+                <a href="#gita-path" class="nav-link" data-target="gita-path">
+                    <i data-lucide="book-open"></i> <span>गीता पाठ</span>
+                </a>
+                <a href="#gita-suchi" class="nav-link" data-target="gita-suchi">
+                    <i data-lucide="list"></i> <span>गीता सूची</span>
+                </a>
+            </nav>
+            <div class="chapter-list">
+                <h2 id="toc-toggle">
+                    <span>अध्याय सूची</span>
+                    <i data-lucide="chevron-down" class="toc-chevron"></i>
+                </h2>
+                <div id="auto-toc-container">
+                    <!-- JavaScript ही यादी भरेल -->
+                </div>
+            </div>
+            <footer class="footer">
+                Made with <i data-lucide="gem" style="width:14px; height:14px;"></i> by ADX
+            </footer>
+        </aside>
+
+        <!-- (मुख्य कंटेंट) -->
+        <main class="content-area">
+            <header class="content-header">
+                <button id="sidebar-toggle" title="साईडबार उघडा/बंद करा">
+                    <i data-lucide="menu"></i>
+                </button>
+                <div class="search-container">
+                    <i data-lucide="search"></i>
+                    <input type="search" id="global-search-bar" placeholder="संपूर्ण गीतेत शोधा...">
+                </div>
+            </header>
+            
+            <div class="content-scroll-area">
+                <!-- विभाग १: मुखपृष्ठ -->
+                <section id="cover-page" class="content-section active">
+                    <h1>💎 संपूर्ण गीता ॲप</h1>
+                    <p>साईडबारमधून अध्याय किंवा सूची निवडा.</p>
+                </section>
+
+                <!-- विभाग २: गीता पाठ -->
+                <section id="gita-path" class="content-section">
+                    <!-- JavaScript हा भाग भरेल -->
+                    <div id="search-results"></div>
+                    <div id="chapter-prompt">
+                        <p>कृपया डावीकडील 'अध्याय सूची' मधून एक अध्याय निवडा.</p>
+                    </div>
+                    <div id="chapters-container">
+                        <!-- JS इथे अध्याय (.chapter-box) टाकेल -->
+                    </div>
+                </section>
+
+                <!-- विभाग ३: गीता सूची -->
+                <section id="gita-suchi" class="content-section">
+                    <!-- ... (सूचीचा सर्व HTML कोड) ... -->
+                    <div class="index-tabs">
+                        <button class="tab-link active" data-index="shloka"><i data-lucide="book-text"></i> श्लोक सूची</button>
+                        <button class="tab-link" data-index="paad"><i data-lucide="pilcrow"></i> पाद सूची</button>
+                        <button class="tab-link" data-index="shabda"><i data-lucide="type"></i> शब्द सूची</button>
+                        <button class="tab-link" data-index="vakta"><i data-lucide="user-voice"></i> वक्ता सूची</button>
+                    </div>
+
+                    <div class="letter-list-container">
+                        <i data-lucide="filter"></i>
+                        <div class="letter-list">
+                            <!-- JS ही अक्षरांची यादी भरेल -->
+                        </div>
+                    </div>
+
+                    <div id="shloka-index" class="tab-content active index-results"></div>
+                    <div id="paad-index" class="tab-content index-results"></div>
+                    <div id="shabda-index" class="tab-content index-results shabda-suchi"></div>
+                    <div id="vakta-index" class="tab-content index-results vakta-suchi"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <!-- नवीन लॉजिक फाईल लिंक -->
+    <script src="GitaLogic.js"></script>
+    <script>
+        // Lucide icons लोड करा
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
+
