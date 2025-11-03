@@ -14,7 +14,7 @@ body {
 
     /* --- UPDATED: Static Gradient + Day Image Placeholder --- */
     /* --- 'DAY' IMAGE LINK (येथे लिंक टाका) --- */
-    background-image: url('https://images.unsplash.com/photo-1528460033278-a6ba57020470?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1470'), linear-gradient(-45deg, #1e0033, #3b004a, #004d40, #002c3e);
+    background-image: url('https://images.unsplash.com/photo-1737279722208-e6779e8b7ba2?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1374'), linear-gradient(-45deg, #1e0033, #3b004a, #004d40, #002c3e);
     background-size: cover, auto;
     background-position: center center, 0% 0%;
     background-repeat: no-repeat, no-repeat;
