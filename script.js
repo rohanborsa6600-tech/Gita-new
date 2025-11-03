@@ -456,13 +456,21 @@ function renderGitaPath() {
         container.innerHTML = '<p>अध्याय सापडला नाही.</p>';
         return;
     }
-
+    
+    // --- CHANGED (REQUEST 1): Added regex for (artha-word) ---
     const highlight = (htmlStringArray, term) => {
         let combinedHtml = htmlStringArray.join('');
+
+        // --- NEW: Add styling for (artha-word) ---
+        // This regex finds text inside parentheses and wraps it
+        combinedHtml = combinedHtml.replace(/\((.*?)\)/g, '<span class="artha-word">($1)</span>');
+
         if (term) {
             const regex = new RegExp(`(${term})`, 'gi');
+            // This will now correctly highlight inside the new span, e.g. <span class="artha-word">(<mark>सञ्जय</mark>)</span>
             combinedHtml = combinedHtml.replace(regex, `<mark>$1</mark>`);
         }
+        
         // Clean and center shlokas
         combinedHtml = combinedHtml.replace(
             /<p class="p4"><span class="s4">([\s\S]*?)।।([०-९]+\/[०-९]+)।।<\/span><\/p>/g,
@@ -483,15 +491,16 @@ function renderGitaPath() {
             case 'chapterEnd': 
                 return `<div class="animate-slide-in-up">${block.html}</div>`;
             case 'shloka':
+                // --- CHANGED (REQUEST 2): Added .shloka-tap-area and removed 'visible' classes ---
                 return `
                     <div id="shloka-${block.id}" class="shloka-block glass-panel animate-slide-in-up">
-                        <div>
+                        <div class="shloka-tap-area">
                             ${highlight(block.p4, highlightTerm)}
                         </div>
                         <div class="shloka-details shloka-details-p1">
                             ${highlight(block.p1, highlightTerm)}
                         </div>
-                        <div class="shloka-details shloka-details-p5p6" style="margin-top: 0.5rem;">
+                        <div class="shloka-details shloka-details-p5p6">
                             ${highlight(block.p5, highlightTerm)}
                             ${highlight(block.p6, highlightTerm)}
                         </div>
@@ -586,6 +595,21 @@ function setupEventListeners() {
             renderSearchComponent(); // Re-render scopes
             renderSearchComponent(); // Re-render results
             return;
+        }
+        
+        // --- CHANGED (REQUEST 2): Added Shloka Tap Handler ---
+        const shlokaTapArea = event.target.closest('.shloka-tap-area');
+        if (shlokaTapArea) {
+            if (window.getSelection().toString()) return; // Don't tap if user is selecting text
+
+            const shlokaBlock = shlokaTapArea.closest('.shloka-block');
+            if (shlokaBlock) {
+                const p5p6Details = shlokaBlock.querySelector('.shloka-details-p5p6');
+                if (p5p6Details) {
+                    p5p6Details.classList.toggle('visible');
+                }
+            }
+            return; // Stop further processing
         }
     });
     
