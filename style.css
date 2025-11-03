@@ -591,6 +591,12 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
 }
 html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 
+/* --- NEW (REQUEST 1): Style for (artha-word) --- */
+.gita-content .p1 .s1 .artha-word {
+    font-weight: 700;
+    color: #facc15; /* Bright yellow */
+}
+
 .gita-content .p2 .s2 { display: block; font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(56, 189, 248, 0.5); font-family: 'Mukta', serif; }
 
 .gita-content .p3 .s3 { display: block; font-size: 1.75rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.5rem; color: #f472b6; text-shadow: 0 0 8px rgba(244, 114, 182, 0.5); }
@@ -612,13 +618,22 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
     transition: all 0.3s ease;
 }
 
+/* --- NEW (REQUEST 2): Style for tap area --- */
+.gita-content .shloka-tap-area {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* --- CHANGED (REQUEST 3): Style for Shloka (P4) --- */
 .gita-content .p4 .s4 .shloka-center { 
    font-size: 1.6rem; 
    font-family: 'Mukta', serif; 
-   color: #fff; 
+   color: #d0fcfc; /* --- CHANGED: Was #fff --- */
+   font-weight: 700; /* --- NEW: Added bold --- */
    line-height: 1.8;
    text-align: center;
-   text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+   text-shadow: 0 0 8px rgba(56, 189, 248, 0.3); /* --- CHANGED: Stronger shadow --- */
 }
 
 .gita-content .p5 .s5 { 
@@ -626,21 +641,21 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
     color: #9ca3af; 
     text-align: center; 
     font-style: italic; 
-    font-size: 1.2rem; /* Was 1.1rem */
+    font-size: 1.2rem; 
     margin-top: 0.5rem; 
 }
 
 .gita-content .p6 .s6 { 
     display: block; 
     color: #6b7280; 
-    font-size: 1.15rem; /* Was 1rem */
+    font-size: 1.15rem; 
     margin-top: 0.5rem; 
     line-height: 1.7; 
-    text-align: justify; /* --- ALIGNMENT CHANGED --- */
+    text-align: justify; 
 }
 
 .shloka-details {
-    /* --- Always visible --- */
+    /* --- Always visible (for P1) --- */
     margin-top: 0.75rem;
     border-left: 3px solid #22d3ee;
     padding-left: 1rem;
@@ -651,6 +666,27 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
     padding-bottom: 0.5rem;
     opacity: 1;
 }
+
+/* --- NEW (REQUEST 2): Hide p5/p6 by default --- */
+.shloka-details.shloka-details-p5p6 {
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    margin-top: 0; 
+}
+
+/* --- NEW (REQUEST 2): 'visible' class to show p5/p6 --- */
+.shloka-details.shloka-details-p5p6.visible {
+    max-height: 1000px; /* arbitrary high value */
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    opacity: 1;
+    margin-top: 0.5rem; 
+}
+
 
 @keyframes highlight-fade-glow {
     0% { background-color: rgba(56, 189, 248, 0.3); box-shadow: 0 0 20px rgba(56, 189, 248, 0.5); }
