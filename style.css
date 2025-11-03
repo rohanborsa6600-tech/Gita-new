@@ -68,7 +68,8 @@ body::after {
     z-index: -1;
 }
 
-/* --- Keyframe Animations --- */
+/* --- Keyframe Animations (REMOVED) --- */
+/*
 @keyframes fade-in-bloom {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
@@ -84,6 +85,7 @@ body::after {
 .animate-slide-in-up {
     animation: slide-in-up 0.4s ease-out;
 }
+*/
 
 /* --- Glass Panel Class --- */
 .glass-panel {
@@ -371,7 +373,7 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
     overflow-y: auto;
 }
 .suchi-list { list-style: none; padding: 0; margin: 0; }
-.suchi-list li { animation: slide-in-up 0.3s ease-out; }
+.suchi-list li { /* animation: slide-in-up 0.3s ease-out; -- REMOVED */ }
 .suchi-item-button {
     text-align: left;
     width: 100%;
@@ -626,7 +628,7 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 
 /* --- NEW (REQUEST 2): Style for tap area --- */
 .gita-content .shloka-tap-area {
-    cursor: pointer;
+    /* cursor: pointer; -- REMOVED (P5/P6 always visible) */
     user-select: none;
     -webkit-user-select: none;
 }
@@ -635,12 +637,17 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 .gita-content .p4 .s4 .shloka-center { 
    font-size: 1.6rem; 
    font-family: 'Mukta', serif; 
-   color: #d0fcfc; /* --- CHANGED: Was #fff --- */
+   color: #c7d2fe; /* --- CHANGED: Was #d0fcfc --- */
    font-weight: 700; /* --- NEW: Added bold --- */
    line-height: 1.8;
    text-align: center;
    text-shadow: 0 0 8px rgba(56, 189, 248, 0.3); /* --- CHANGED: Stronger shadow --- */
 }
+
+html.dark .gita-content .p4 .s4 .shloka-center {
+    color: #e0e7ff; /* --- NEW: Lighter color for dark mode --- */
+}
+
 
 .gita-content .p5 .s5 { 
     display: block; 
@@ -661,7 +668,7 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 }
 
 .shloka-details {
-    /* --- Always visible (for P1) --- */
+    /* --- Always visible (for P1 and now P5/P6) --- */
     margin-top: 0.75rem;
     border-left: 3px solid #22d3ee;
     padding-left: 1rem;
@@ -673,25 +680,15 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
     opacity: 1;
 }
 
-/* --- NEW (REQUEST 2): Hide p5/p6 by default --- */
+/* --- REMOVED (REQUEST 4): Rules for hiding P5/P6 removed --- */
+/*
 .shloka-details.shloka-details-p5p6 {
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    max-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    opacity: 0;
-    margin-top: 0; 
+    ...
 }
-
-/* --- NEW (REQUEST 2): 'visible' class to show p5/p6 --- */
 .shloka-details.shloka-details-p5p6.visible {
-    max-height: 1000px; /* arbitrary high value */
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    opacity: 1;
-    margin-top: 0.5rem; 
+    ...
 }
+*/
 
 
 @keyframes highlight-fade-glow {
