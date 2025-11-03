@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="mr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>भगवद्गीता | Liquid Glass UI</title>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="loading-screen">
+        <i data-lucide="loader-2" class="loader"></i>
+        <h2>गीता ॲप लोड होत आहे...</h2>
+    </div>
+
+    <nav class="navbar glass-panel">
+        <div class="navbar-content">
+            <div class="navbar-left">
+                <button id="nav-logo" class="nav-logo">
+                    <span>💎</span>
+                    <span class="logo-text" style="font-family: 'Mukta', serif;">गीता</span>
+                </button>
+                <button id="nav-suchi" class="nav-link">
+                    <i data-lucide="list" style="width:1rem; height:1rem;"></i>
+                    गीता सूची
+                </button>
+                <button id="nav-search" class="nav-link">
+                    <i data-lucide="search" style="width:1rem; height:1rem;"></i>
+                    शोध
+                </button>
+            </div>
+            <div class="navbar-right">
+                <div class="font-controls">
+                    <button id="font-decrease" class="font-btn">A-</button>
+                    <i data-lucide="type" style="width:1rem; height:1rem;"></i>
+                    <button id="font-increase" class="font-btn">A+</button>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">
+                    <i data-lucide="moon" class="icon-moon"></i>
+                    <i data-lucide="sun" class="icon-sun" style="display: none;"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content">
+        <div id="view-grid" class="view animate-fade-in-bloom">
+            <h2 class="section-header">अध्याय सूची</h2>
+            <div id="chapter-grid-container">
+                </div>
+        </div>
+
+        <div id="view-suchi" class="view animate-fade-in-bloom">
+            <h2 class="section-header">गीता सूची</h2>
+            <div id="suchi-tabs-container" class="suchi-tabs glass-panel">
+                </div>
+            <div id="letter-filter-container" class="letter-filter glass-panel">
+                </div>
+            <div id="suchi-list-container" class="suchi-list-container glass-panel">
+                </div>
+        </div>
+
+        <div id="view-search" class="view animate-fade-in-bloom">
+            <h2 class="section-header">शोध</h2>
+            <div class="search-input-container">
+                <input type="text" id="search-input" placeholder="शोधा (उदा. 'अर्जुन' किंवा '1.2')" class="glass-panel">
+                <i data-lucide="search"></i>
+            </div>
+            <div id="search-scopes-container" class="search-scopes">
+                </div>
+            <div id="search-results-info"></div>
+            <ul id="search-results-list">
+                </ul>
+        </div>
+
+        <div id="view-path" class="view animate-fade-in-bloom">
+            <div class="path-controls">
+                <button id="back-button" class="path-control-btn glass-panel">
+                    <i data-lucide="arrow-left"></i>
+                    परत जा
+                </button>
+                <button id="toggle-all-button" class="path-control-btn glass-panel">
+                    <i data-lucide="eye" id="toggle-all-icon"></i>
+                    <span id="toggle-all-text">सर्व दाखवा</span>
+                </button>
+            </div>
+            <div id="gita-path-content" class="gita-content">
+                </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            Made with <span>💎</span> by ADX
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
