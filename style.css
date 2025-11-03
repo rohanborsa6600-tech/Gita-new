@@ -1,0 +1,676 @@
+/* --- Google Font (Mukta) Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&display=swap');
+
+:root {
+    --font-size-base: 16px;
+}
+
+html {
+    font-size: var(--font-size-base);
+}
+
+body {
+    font-family: 'Mukta', sans-serif;
+    /* --- Animated Gradient Background --- */
+    background: linear-gradient(-45deg, #1e0033, #3b004a, #004d40, #002c3e);
+    background-size: 400% 400%;
+    animation: gradient-bg 25s ease infinite;
+    color: #e0e7ff; /* Default light text */
+    margin: 0;
+    padding-top: 64px; /* Navbar height */
+}
+
+html.dark body {
+    background: linear-gradient(-45deg, #020024, #050510, #001f24, #040d11);
+    background-size: 400% 400%;
+    animation: gradient-bg 25s ease infinite;
+    color: #dbeafe;
+}
+
+@keyframes gradient-bg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- "Flower Light Reflection" --- */
+body::before {
+    content: '';
+    position: fixed;
+    top: 20%;
+    left: 10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.05) 0%, rgba(0, 255, 255, 0) 60%);
+    border-radius: 50%;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: -1;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: 10%;
+    right: 5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255, 0, 255, 0.05) 0%, rgba(255, 0, 255, 0) 60%);
+    border-radius: 50%;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* --- Keyframe Animations --- */
+@keyframes fade-in-bloom {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in-bloom {
+    animation: fade-in-bloom 0.5s ease-out;
+}
+
+@keyframes slide-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-in-up {
+    animation: slide-in-up 0.4s ease-out;
+}
+
+/* --- Glass Panel Class --- */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    border-radius: 0.75rem; /* rounded-xl */
+}
+
+html.dark .glass-panel {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 10px rgba(56, 189, 248, 0.1);
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 255, 0.3);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 255, 0.5);
+}
+
+/* --- Button Resets --- */
+button {
+    font-family: 'Mukta', sans-serif;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: inherit;
+}
+
+/* --- Layout --- */
+main {
+    padding: 1rem;
+    max-width: 48rem; /* max-w-5xl */
+    margin: 0 auto;
+    padding-top: 1.5rem; /* pt-20 from react, but navbar is 4rem (h-16) + 1.5rem = 5.5rem total */
+}
+
+.view {
+    display: none;
+}
+.view.active {
+    display: block;
+}
+
+/* --- Navbar --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    height: 4rem; /* h-16 */
+    border-bottom-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0; /* No rounding for navbar */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 255, 255, 0.1);
+}
+.navbar-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* gap-6 */
+}
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* gap-4 */
+}
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 700;
+    color: #22d3ee; /* text-cyan-400 */
+    transition: all 0.3s ease;
+}
+.nav-logo:hover { color: #67e8f9; }
+.nav-logo span:first-child { 
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 5px rgba(0,255,255,0.7)); 
+}
+.nav-logo .logo-text { display: none; }
+@media (min-width: 640px) { .nav-logo .logo-text { display: inline; } }
+
+.nav-link {
+    font-size: 1rem; /* text-base */
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: color 0.3s ease;
+}
+.nav-link:hover { color: white; }
+@media (max-width: 640px) { .nav-link { font-size: 0.875rem; } }
+
+
+.font-controls {
+    display: flex;
+    align-items: center;
+    border-radius: 0.5rem;
+    padding: 0.125rem;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
+.font-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+}
+.font-btn:hover { color: white; background: rgba(255, 255, 255, 0.1); }
+.font-controls i { color: rgba(255, 255, 255, 0.5); margin: 0 0.25rem; }
+
+.theme-toggle {
+    padding: 0.5rem;
+    border-radius: 9999px;
+    transition: background-color 0.3s ease;
+}
+.theme-toggle:hover { background: rgba(255, 255, 255, 0.1); }
+.theme-toggle .icon-sun { color: #facc15; }
+.theme-toggle .icon-moon { color: rgba(255, 255, 255, 0.8); }
+
+/* --- Loading Screen --- */
+#loading-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    background: #040d11;
+}
+#loading-screen h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Mukta', sans-serif;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.loader {
+    width: 3rem;
+    height: 3rem;
+    color: #22d3ee;
+    animation: spin 1s linear infinite;
+}
+
+/* --- Section Header --- */
+.section-header {
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+    font-family: 'Mukta', serif;
+}
+
+/* --- Chapter Grid --- */
+#chapter-grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+}
+@media (min-width: 640px) { #chapter-grid-container { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { #chapter-grid-container { grid-template-columns: repeat(3, 1fr); } }
+
+.chapter-grid-button {
+    padding: 1.25rem;
+    text-align: left;
+    transform: scale(1);
+    transition: all 0.3s ease;
+}
+.chapter-grid-button:hover {
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: scale(1.03);
+}
+.chapter-grid-button span {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #22d3ee;
+}
+.chapter-grid-button h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Mukta', sans-serif;
+    margin-bottom: 0;
+}
+
+/* --- Gita Suchi --- */
+.suchi-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 0.25rem;
+}
+.suchi-tab-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-radius: 0.375rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+.suchi-tab-button:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+.suchi-tab-button.active {
+    background: rgba(56, 189, 248, 0.3);
+    color: #67e8f9;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+@media (max-width: 640px) { .suchi-tab-button { font-size: 0.875rem; padding: 0.5rem 0.75rem; } }
+
+.letter-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    justify-content: center;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+.letter-filter-button {
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    width: 2rem;
+    height: 2rem;
+}
+.letter-filter-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+.letter-filter-button.all-btn { width: auto; padding: 0 0.75rem; }
+.letter-filter-button.active {
+    background: #22d3ee;
+    color: white;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+@media (max-width: 640px) { 
+    .letter-filter-button { width: 1.75rem; height: 1.75rem; font-size: 0.75rem;} 
+}
+
+
+.suchi-list-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+.suchi-list { list-style: none; padding: 0; margin: 0; }
+.suchi-list li { animation: slide-in-up 0.3s ease-out; }
+.suchi-item-button {
+    text-align: left;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+.suchi-item-button:hover { background: rgba(255, 255, 255, 0.1); }
+.suchi-item-button .shloka-id {
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: rgba(56, 189, 248, 0.8);
+    margin-right: 1rem;
+}
+.suchi-item-button .shloka-text-shloka { 
+    font-family: 'Mukta', serif; 
+    color: rgba(255,255,255,0.9);
+    font-size: 1.15rem; 
+}
+.suchi-item-button .shloka-text-other { font-size: 0.875rem; color: rgba(255,255,255,0.7); }
+
+.vakta-group { margin-bottom: 1.5rem; }
+.vakta-group-header {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #f472b6;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.25rem;
+    font-family: 'Mukta', serif;
+}
+.vakta-group .suchi-item-button .shloka-text-shloka { 
+    font-family: 'Mukta', sans-serif; /* Override serif for preview */
+    font-size: 1rem; /* Reset font size for preview */
+}
+
+.suchi-item-aggregated {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.shabd-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.shabd-id-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.shabd-id-button {
+    font-family: monospace;
+    font-size: 0.9rem;
+    background: rgba(56, 189, 248, 0.1);
+    color: #67e8f9;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+.shabd-id-button:hover {
+    background: rgba(56, 189, 248, 0.3);
+    color: #a5f3fc;
+}
+
+
+/* --- Search Component --- */
+.search-input-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+#search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem; /* pl-10 pr-4 py-3 */
+    border-radius: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+#search-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+#search-input:focus {
+    outline: none;
+    border-color: rgba(56, 189, 248, 0.8);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+}
+.search-input-container i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.search-scopes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+.scope-button {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+}
+.scope-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+.scope-button.active {
+    background: #22d3ee;
+    color: white;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+.scope-button i { width: 0.875rem; height: 0.875rem; }
+
+#search-results-info {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1rem;
+}
+#search-results-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.search-result-item {
+    text-align: left;
+    width: 100%;
+    padding: 1rem;
+}
+.search-result-item:hover {
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    border-color: rgba(56, 189, 248, 0.5);
+}
+.search-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+.search-result-header .shloka-id {
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #22d3ee;
+}
+.search-result-header .shloka-type {
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    color: #67e8f9;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+}
+.search-result-text.shloka-text-shloka { font-family: 'Mukta', serif; color: rgba(255,255,255,0.9); }
+.search-result-text.shloka-text-other { font-size: 0.875rem; color: rgba(255,255,255,0.7); }
+.search-result-text mark {
+    background: #facc15;
+    color: black;
+    padding: 0 0.125rem;
+    border-radius: 0.125rem;
+}
+
+/* --- Gita Path --- */
+.path-controls {
+    position: sticky;
+    top: 5rem; /* 4rem navbar + 1rem spacing */
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.path-control-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: none;
+}
+#back-button {
+    color: #67e8f9;
+    background: rgba(56, 189, 248, 0.1);
+}
+#back-button:hover { 
+    color: #a5f3fc;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5); 
+}
+#toggle-all-button {
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    display: none; /* --- Hide toggle button --- */
+}
+#toggle-all-button:hover { 
+    color: white; 
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+.path-control-btn i { width: 1rem; height: 1rem; }
+
+.gita-content .p1 .s1 { 
+    display: block; 
+    margin-top: 0.75rem; 
+    color: #d1d5db; 
+    line-height: 1.7; 
+    font-size: 0.95em;
+    text-align: justify; /* --- ALIGNMENT CHANGED --- */
+}
+html.dark .gita-content .p1 .s1 { color: #d1d5db; }
+
+.gita-content .p2 .s2 { display: block; font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(56, 189, 248, 0.5); font-family: 'Mukta', serif; }
+
+.gita-content .p3 .s3 { display: block; font-size: 1.75rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.5rem; color: #f472b6; text-shadow: 0 0 8px rgba(244, 114, 182, 0.5); }
+
+.gita-content .p11 {
+    display: block; 
+    text-align: center; 
+    font-weight: 700; 
+    font-size: 1.25rem; 
+    color: #f472b6; /* pink-400, like Vakta */
+    text-shadow: 0 0 8px rgba(244, 114, 182, 0.5);
+    margin-top: 2.5rem; 
+    margin-bottom: 1.5rem;
+}
+
+.gita-content .shloka-block { 
+    margin: 0.5rem 0;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.gita-content .p4 .s4 .shloka-center { 
+   font-size: 1.6rem; 
+   font-family: 'Mukta', serif; 
+   color: #fff; 
+   line-height: 1.8;
+   text-align: center;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.gita-content .p5 .s5 { 
+    display: block; 
+    color: #9ca3af; 
+    text-align: center; 
+    font-style: italic; 
+    font-size: 1.2rem; /* Was 1.1rem */
+    margin-top: 0.5rem; 
+}
+
+.gita-content .p6 .s6 { 
+    display: block; 
+    color: #6b7280; 
+    font-size: 1.15rem; /* Was 1rem */
+    margin-top: 0.5rem; 
+    line-height: 1.7; 
+    text-align: justify; /* --- ALIGNMENT CHANGED --- */
+}
+
+.shloka-details {
+    /* --- Always visible --- */
+    margin-top: 0.75rem;
+    border-left: 3px solid #22d3ee;
+    padding-left: 1rem;
+    background: rgba(0, 255, 255, 0.03);
+    border-radius: 0 8px 8px 0;
+    
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    opacity: 1;
+}
+
+@keyframes highlight-fade-glow {
+    0% { background-color: rgba(56, 189, 248, 0.3); box-shadow: 0 0 20px rgba(56, 189, 248, 0.5); }
+    100% { background-color: transparent; box-shadow: none; }
+}
+.highlight-shloka {
+    animation: highlight-fade-glow 2s ease-out;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2.5rem;
+}
+footer p {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+footer span {
+    filter: drop-shadow(0 0 5px rgba(0,255,255,0.7));
+}
