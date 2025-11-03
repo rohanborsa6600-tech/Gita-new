@@ -14,7 +14,7 @@ body {
 
     /* --- UPDATED: Static Gradient + Day Image Placeholder --- */
     /* --- 'DAY' IMAGE LINK (येथे लिंक टाका) --- */
-    background-image: url('https://images.unsplash.com/photo-1530176928500-2372a88e00b5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1374'), linear-gradient(-45deg, #1e0033, #3b004a, #004d40, #002c3e);
+    background-image: url('https://images.unsplash.com/photo-1669531798448-f6883f5e7470?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1472'), linear-gradient(-45deg, #1e0033, #3b004a, #004d40, #002c3e);
     background-size: cover, auto;
     background-position: center center, 0% 0%;
     background-repeat: no-repeat, no-repeat;
@@ -29,7 +29,7 @@ body {
 html.dark body {
     /* --- UPDATED: Static Gradient + Night Image Placeholder --- */
     /* --- 'NIGHT' IMAGE LINK (येथे लिंक टाका) --- */
-    background-image: url('https://images.unsplash.com/photo-1760772482260-b610e3b7cf94?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1374'), linear-gradient(-45deg, #020024, #050510, #001f24, #040d11);
+    background-image: url('https://images.unsplash.com/photo-1618257224004-41cafc6e2ba8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1374'), linear-gradient(-45deg, #020024, #050510, #001f24, #040d11);
     background-size: cover, auto;
     background-position: center center, 0% 0%;
     background-repeat: no-repeat, no-repeat;
