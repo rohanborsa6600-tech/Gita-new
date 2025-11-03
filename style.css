@@ -628,7 +628,7 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 
 /* --- NEW (REQUEST 2): Style for tap area --- */
 .gita-content .shloka-tap-area {
-    /* cursor: pointer; -- REMOVED (P5/P6 always visible) */
+    cursor: pointer; /* --- RESTORED for hide/show --- */
     user-select: none;
     -webkit-user-select: none;
 }
@@ -637,17 +637,20 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 .gita-content .p4 .s4 .shloka-center { 
    font-size: 1.6rem; 
    font-family: 'Mukta', serif; 
-   color: #c7d2fe; /* --- CHANGED: Was #d0fcfc --- */
-   font-weight: 700; /* --- NEW: Added bold --- */
+   color: #dbeafe; /* --- DAY/LIGHT THEME: Standard light blue --- */
+   font-weight: 600; /* --- DAY/LIGHT THEME: Semi-bold --- */
    line-height: 1.8;
    text-align: center;
-   text-shadow: 0 0 8px rgba(56, 189, 248, 0.3); /* --- CHANGED: Stronger shadow --- */
+   text-shadow: 0 0 8px rgba(56, 189, 248, 0.2); /* --- DAY/LIGHT THEME: Subtle shadow --- */
+   transition: color 0.3s ease, font-weight 0.3s ease, text-shadow 0.3s ease; /* --- NEW: Smooth transition --- */
 }
 
+/* --- NEW: P4 Style for Dark Theme --- */
 html.dark .gita-content .p4 .s4 .shloka-center {
-    color: #e0e7ff; /* --- NEW: Lighter color for dark mode --- */
+    color: #ffffff; /* --- NIGHT/DARK THEME: Pure bright white --- */
+    font-weight: 700; /* --- NIGHT/DARK THEME: Bolder --- */
+    text-shadow: 0 0 12px rgba(103, 232, 249, 0.7); /* --- NIGHT/DARK THEME: Stronger cyan glow --- */
 }
-
 
 .gita-content .p5 .s5 { 
     display: block; 
@@ -668,7 +671,7 @@ html.dark .gita-content .p4 .s4 .shloka-center {
 }
 
 .shloka-details {
-    /* --- Always visible (for P1 and now P5/P6) --- */
+    /* --- Always visible (for P1) --- */
     margin-top: 0.75rem;
     border-left: 3px solid #22d3ee;
     padding-left: 1rem;
@@ -680,15 +683,25 @@ html.dark .gita-content .p4 .s4 .shloka-center {
     opacity: 1;
 }
 
-/* --- REMOVED (REQUEST 4): Rules for hiding P5/P6 removed --- */
-/*
+/* --- RESTORED: Hide p5/p6 by default --- */
 .shloka-details.shloka-details-p5p6 {
-    ...
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    margin-top: 0; 
 }
+
+/* --- RESTORED: 'visible' class to show p5/p6 --- */
 .shloka-details.shloka-details-p5p6.visible {
-    ...
+    max-height: 1000px; /* arbitrary high value */
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    opacity: 1;
+    margin-top: 0.5rem; 
 }
-*/
 
 
 @keyframes highlight-fade-glow {
