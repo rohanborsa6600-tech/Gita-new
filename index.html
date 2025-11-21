@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="mr" class="dark">
 <head>
+    <link rel="manifest" href="/Gita-new/manifest.json">
+<meta name="theme-color" content="#ff9933">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/Gita-new/sw.js')
+        .then((reg) => console.log('Service Worker Registered!', reg.scope))
+        .catch((err) => console.log('Service Worker Registration Failed:', err));
+    });
+  }
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>भगवद्गीता | Liquid Glass UI</title>
