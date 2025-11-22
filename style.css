@@ -36,7 +36,7 @@ html.dark body {
     background-attachment: fixed, fixed;
     /* --- END UPDATE --- */
 
-    color: #dbeafe;
+    color: #dbeafe; /* Dark theme default light text */
 }
 
 /* --- "Flower Light Reflection" --- */
@@ -68,25 +68,6 @@ body::after {
     z-index: -1;
 }
 
-/* --- Keyframe Animations (REMOVED) --- */
-/*
-@keyframes fade-in-bloom {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-.animate-fade-in-bloom {
-    animation: fade-in-bloom 0.5s ease-out;
-}
-
-@keyframes slide-in-up {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-slide-in-up {
-    animation: slide-in-up 0.4s ease-out;
-}
-*/
-
 /* --- Glass Panel Class --- */
 .glass-panel {
     background: rgba(255, 255, 255, 0.05);
@@ -97,11 +78,11 @@ body::after {
     transition: all 0.3s ease;
     border-radius: 0.75rem; /* rounded-xl */
 }
-
 html.dark .glass-panel {
     background: rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 10px rgba(56, 189, 248, 0.1);
+    color: #dbeafe; /* Explicitly ensure contrast text in dark mode panels */
 }
 
 /* --- Custom Scrollbar --- */
@@ -134,7 +115,7 @@ main {
     padding: 1rem;
     max-width: 48rem; /* max-w-5xl */
     margin: 0 auto;
-    padding-top: 1.5rem; /* pt-20 from react, but navbar is 4rem (h-16) + 1.5rem = 5.5rem total */
+    padding-top: 1.5rem; 
 }
 
 .view {
@@ -154,7 +135,7 @@ main {
     height: 4rem; /* h-16 */
     border-bottom-width: 1px;
     border-color: rgba(255, 255, 255, 0.1);
-    border-radius: 0; /* No rounding for navbar */
+    border-radius: 0; 
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 255, 255, 0.1);
 }
 .navbar-content {
@@ -203,6 +184,8 @@ main {
     transition: color 0.3s ease;
 }
 .nav-link:hover { color: white; }
+html.dark .nav-link { color: rgba(255, 255, 255, 0.7); }
+
 @media (max-width: 640px) { .nav-link { font-size: 0.875rem; } }
 
 
@@ -217,7 +200,6 @@ main {
 html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
 .font-btn {
     padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.7);
     border-radius: 0.375rem;
     transition: all 0.3s ease;
@@ -300,9 +282,13 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
     font-size: 1.25rem;
     font-weight: 600;
     margin-top: 0.25rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9); /* Default light color */
     font-family: 'Mukta', sans-serif;
     margin-bottom: 0;
+}
+/* --- Day/Night Font Change --- */
+html.dark .chapter-grid-button h3 {
+    color: #ffffff; /* Brighter white in dark mode */
 }
 
 /* --- Gita Suchi --- */
@@ -390,8 +376,12 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
 }
 .suchi-item-button .shloka-text-shloka { 
     font-family: 'Mukta', serif; 
-    color: rgba(255,255,255,0.9);
+    color: rgba(255,255,255,0.9); /* Default light color */
     font-size: 1.15rem; 
+}
+/* --- Day/Night Font Change --- */
+html.dark .suchi-item-button .shloka-text-shloka {
+    color: #ffffff; /* Brighter white in dark mode */
 }
 .suchi-item-button .shloka-text-other { font-size: 0.875rem; color: rgba(255,255,255,0.7); }
 
@@ -451,10 +441,17 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.5rem; /* pl-10 pr-4 py-3 */
     border-radius: 0.5rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9); /* Default light color */
     box-sizing: border-box; /* Ensure padding doesn't affect width */
     border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
 }
+/* --- Day/Night Font Change --- */
+html.dark #search-input {
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.1);
+}
+
 #search-input::placeholder { color: rgba(255, 255, 255, 0.4); }
 #search-input:focus {
     outline: none;
@@ -599,7 +596,7 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
 }
 html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 
-/* --- NEW (REQUEST 1): Style for (artha-word) --- */
+/* --- REQUEST 1: Style for (artha-word) --- */
 .gita-content .p1 .s1 .artha-word {
     font-weight: 700;
     color: #facc15; /* Bright yellow */
@@ -626,26 +623,26 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
     transition: all 0.3s ease;
 }
 
-/* --- NEW (REQUEST 2): Style for tap area --- */
+/* --- REQUEST 2: Style for tap area --- */
 .gita-content .shloka-tap-area {
-    cursor: pointer; /* --- RESTORED for hide/show --- */
+    cursor: pointer; 
     user-select: none;
     -webkit-user-select: none;
 }
 
-/* --- CHANGED (REQUEST 3): Style for Shloka (P4) --- */
+/* --- REQUEST 3: Style for Shloka (P4) --- */
 .gita-content .p4 .s4 .shloka-center { 
    font-size: 1.6rem; 
    font-family: 'Mukta', serif; 
-   color: #dbeafe; /* --- DAY/LIGHT THEME: Standard light blue --- */
+   color: #dbeafe; /* --- DAY/LIGHT THEME: Standard light blue/white --- */
    font-weight: 600; /* --- DAY/LIGHT THEME: Semi-bold --- */
    line-height: 1.8;
    text-align: center;
-   text-shadow: 0 0 8px rgba(56, 189, 248, 0.2); /* --- DAY/LIGHT THEME: Subtle shadow --- */
-   transition: color 0.3s ease, font-weight 0.3s ease, text-shadow 0.3s ease; /* --- NEW: Smooth transition --- */
+   text-shadow: 0 0 8px rgba(56, 189, 248, 0.2); 
+   transition: color 0.3s ease, font-weight 0.3s ease, text-shadow 0.3s ease; 
 }
 
-/* --- NEW: P4 Style for Dark Theme --- */
+/* --- P4 Style for Dark Theme (Updated) --- */
 html.dark .gita-content .p4 .s4 .shloka-center {
     color: #ffffff; /* --- NIGHT/DARK THEME: Pure bright white --- */
     font-weight: 700; /* --- NIGHT/DARK THEME: Bolder --- */
@@ -683,7 +680,7 @@ html.dark .gita-content .p4 .s4 .shloka-center {
     opacity: 1;
 }
 
-/* --- RESTORED: Hide p5/p6 by default --- */
+/* --- Hide p5/p6 by default --- */
 .shloka-details.shloka-details-p5p6 {
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -694,7 +691,7 @@ html.dark .gita-content .p4 .s4 .shloka-center {
     margin-top: 0; 
 }
 
-/* --- RESTORED: 'visible' class to show p5/p6 --- */
+/* --- 'visible' class to show p5/p6 --- */
 .shloka-details.shloka-details-p5p6.visible {
     max-height: 1000px; /* arbitrary high value */
     padding-top: 0.5rem;
@@ -720,9 +717,14 @@ footer {
 }
 footer p {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.5); /* Default light color */
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
 }
+/* --- Day/Night Font Change --- */
+html.dark footer p {
+    color: rgba(255, 255, 255, 0.7); /* Slightly brighter in dark mode */
+}
+
 footer span {
     filter: drop-shadow(0 0 5px rgba(0,255,255,0.7));
 }
