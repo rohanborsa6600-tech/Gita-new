@@ -3,6 +3,10 @@
 
 :root {
     --font-size-base: 16px;
+    /* --- NEW COLOR PALETTE VARS --- */
+    --color-accent-primary: #00ccff; /* Bright Sky Blue */
+    --color-accent-secondary: #ff73f0; /* Bright Magenta Pink */
+    --color-accent-highlight: #ffdd00; /* Gold Yellow */
 }
 
 html {
@@ -82,7 +86,7 @@ html.dark .glass-panel {
     background: rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 10px rgba(56, 189, 248, 0.1);
-    color: #dbeafe; /* Explicitly ensure contrast text in dark mode panels */
+    color: #dbeafe; 
 }
 
 /* --- Custom Scrollbar --- */
@@ -163,7 +167,7 @@ main {
     gap: 0.5rem;
     font-size: 1.25rem; /* text-xl */
     font-weight: 700;
-    color: #22d3ee; /* text-cyan-400 */
+    color: var(--color-accent-primary); /* UPDATED */
     transition: all 0.3s ease;
 }
 .nav-logo:hover { color: #67e8f9; }
@@ -238,7 +242,7 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
 .loader {
     width: 3rem;
     height: 3rem;
-    color: #22d3ee;
+    color: var(--color-accent-primary); /* UPDATED */
     animation: spin 1s linear infinite;
 }
 
@@ -269,14 +273,14 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
     transition: all 0.3s ease;
 }
 .chapter-grid-button:hover {
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-    border-color: rgba(56, 189, 248, 0.5);
+    box-shadow: 0 0 20px rgba(0, 204, 255, 0.6); /* UPDATED shadow color */
+    border-color: rgba(0, 204, 255, 0.5); 
     transform: scale(1.03);
 }
 .chapter-grid-button span {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #22d3ee;
+    color: var(--color-accent-primary); /* UPDATED */
 }
 .chapter-grid-button h3 {
     font-size: 1.25rem;
@@ -286,9 +290,8 @@ html.dark .font-controls { background: rgba(255, 255, 255, 0.05); }
     font-family: 'Mukta', sans-serif;
     margin-bottom: 0;
 }
-/* --- Day/Night Font Change --- */
 html.dark .chapter-grid-button h3 {
-    color: #ffffff; /* Brighter white in dark mode */
+    color: #ffffff; 
 }
 
 /* --- Gita Suchi --- */
@@ -313,8 +316,8 @@ html.dark .chapter-grid-button h3 {
     background: rgba(255, 255, 255, 0.05);
 }
 .suchi-tab-button.active {
-    background: rgba(56, 189, 248, 0.3);
-    color: #67e8f9;
+    background: rgba(0, 204, 255, 0.3); /* UPDATED */
+    color: #a5f3fc; 
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
 @media (max-width: 640px) { .suchi-tab-button { font-size: 0.875rem; padding: 0.5rem 0.75rem; } }
@@ -343,9 +346,9 @@ html.dark .chapter-grid-button h3 {
 }
 .letter-filter-button.all-btn { width: auto; padding: 0 0.75rem; }
 .letter-filter-button.active {
-    background: #22d3ee;
+    background: var(--color-accent-primary); /* UPDATED */
     color: white;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.5); /* UPDATED */
 }
 @media (max-width: 640px) { 
     .letter-filter-button { width: 1.75rem; height: 1.75rem; font-size: 0.75rem;} 
@@ -359,7 +362,6 @@ html.dark .chapter-grid-button h3 {
     overflow-y: auto;
 }
 .suchi-list { list-style: none; padding: 0; margin: 0; }
-.suchi-list li { /* animation: slide-in-up 0.3s ease-out; -- REMOVED */ }
 .suchi-item-button {
     text-align: left;
     width: 100%;
@@ -371,17 +373,16 @@ html.dark .chapter-grid-button h3 {
 .suchi-item-button .shloka-id {
     font-family: monospace;
     font-size: 0.875rem;
-    color: rgba(56, 189, 248, 0.8);
+    color: rgba(0, 204, 255, 0.8); /* UPDATED */
     margin-right: 1rem;
 }
 .suchi-item-button .shloka-text-shloka { 
     font-family: 'Mukta', serif; 
-    color: rgba(255,255,255,0.9); /* Default light color */
+    color: rgba(255,255,255,0.9); 
     font-size: 1.15rem; 
 }
-/* --- Day/Night Font Change --- */
 html.dark .suchi-item-button .shloka-text-shloka {
-    color: #ffffff; /* Brighter white in dark mode */
+    color: #ffffff; 
 }
 .suchi-item-button .shloka-text-other { font-size: 0.875rem; color: rgba(255,255,255,0.7); }
 
@@ -389,7 +390,7 @@ html.dark .suchi-item-button .shloka-text-shloka {
 .vakta-group-header {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #f472b6;
+    color: var(--color-accent-secondary); /* UPDATED */
     margin-bottom: 0.5rem;
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.05);
@@ -397,8 +398,8 @@ html.dark .suchi-item-button .shloka-text-shloka {
     font-family: 'Mukta', serif;
 }
 .vakta-group .suchi-item-button .shloka-text-shloka { 
-    font-family: 'Mukta', sans-serif; /* Override serif for preview */
-    font-size: 1rem; /* Reset font size for preview */
+    font-family: 'Mukta', sans-serif; 
+    font-size: 1rem; 
 }
 
 .suchi-item-aggregated {
@@ -420,15 +421,15 @@ html.dark .suchi-item-button .shloka-text-shloka {
 .shabd-id-button {
     font-family: monospace;
     font-size: 0.9rem;
-    background: rgba(56, 189, 248, 0.1);
-    color: #67e8f9;
+    background: rgba(0, 204, 255, 0.1); /* UPDATED */
+    color: #a5f3fc;
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
     transition: all 0.2s ease;
 }
 .shabd-id-button:hover {
-    background: rgba(56, 189, 248, 0.3);
-    color: #a5f3fc;
+    background: rgba(0, 204, 255, 0.3); /* UPDATED */
+    color: white;
 }
 
 
@@ -441,12 +442,11 @@ html.dark .suchi-item-button .shloka-text-shloka {
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.5rem; /* pl-10 pr-4 py-3 */
     border-radius: 0.5rem;
-    color: rgba(255, 255, 255, 0.9); /* Default light color */
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    color: rgba(255, 255, 255, 0.9); 
+    box-sizing: border-box; 
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.05);
 }
-/* --- Day/Night Font Change --- */
 html.dark #search-input {
     color: #ffffff;
     background: rgba(0, 0, 0, 0.1);
@@ -455,8 +455,8 @@ html.dark #search-input {
 #search-input::placeholder { color: rgba(255, 255, 255, 0.4); }
 #search-input:focus {
     outline: none;
-    border-color: rgba(56, 189, 248, 0.8);
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+    border-color: rgba(0, 204, 255, 0.8); /* UPDATED */
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.5); /* UPDATED */
 }
 .search-input-container i {
     position: absolute;
@@ -491,9 +491,9 @@ html.dark #search-input {
     color: white;
 }
 .scope-button.active {
-    background: #22d3ee;
+    background: var(--color-accent-primary); /* UPDATED */
     color: white;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.5); /* UPDATED */
 }
 .scope-button i { width: 0.875rem; height: 0.875rem; }
 
@@ -516,8 +516,8 @@ html.dark #search-input {
     padding: 1rem;
 }
 .search-result-item:hover {
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-    border-color: rgba(56, 189, 248, 0.5);
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.4); /* UPDATED */
+    border-color: rgba(0, 204, 255, 0.5); 
 }
 .search-result-header {
     display: flex;
@@ -528,20 +528,20 @@ html.dark #search-input {
 .search-result-header .shloka-id {
     font-family: monospace;
     font-size: 0.875rem;
-    color: #22d3ee;
+    color: var(--color-accent-primary); /* UPDATED */
 }
 .search-result-header .shloka-type {
     font-size: 0.75rem;
     font-weight: 500;
     background: rgba(255, 255, 255, 0.1);
-    color: #67e8f9;
+    color: #a5f3fc;
     padding: 0.125rem 0.5rem;
     border-radius: 9999px;
 }
 .search-result-text.shloka-text-shloka { font-family: 'Mukta', serif; color: rgba(255,255,255,0.9); }
 .search-result-text.shloka-text-other { font-size: 0.875rem; color: rgba(255,255,255,0.7); }
 .search-result-text mark {
-    background: #facc15;
+    background: var(--color-accent-highlight); /* UPDATED */
     color: black;
     padding: 0 0.125rem;
     border-radius: 0.125rem;
@@ -568,12 +568,12 @@ html.dark #search-input {
     border: none;
 }
 #back-button {
-    color: #67e8f9;
-    background: rgba(56, 189, 248, 0.1);
+    color: #a5f3fc;
+    background: rgba(0, 204, 255, 0.1); /* UPDATED */
 }
 #back-button:hover { 
-    color: #a5f3fc;
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5); 
+    color: white;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.5); /* UPDATED */
 }
 #toggle-all-button {
     color: rgba(255, 255, 255, 0.7);
@@ -592,27 +592,27 @@ html.dark #search-input {
     color: #d1d5db; 
     line-height: 1.7; 
     font-size: 0.95em;
-    text-align: justify; /* --- ALIGNMENT CHANGED --- */
+    text-align: justify; 
 }
 html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 
 /* --- REQUEST: Style for (artha-word) --- */
 .gita-content .p1 .s1 .artha-word {
     font-weight: 700;
-    color: #facc15; /* Bright yellow */
+    color: var(--color-accent-highlight); /* UPDATED */
 }
 
-.gita-content .p2 .s2 { display: block; font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(56, 189, 248, 0.5); font-family: 'Mukta', serif; }
+.gita-content .p2 .s2 { display: block; font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(0, 204, 255, 0.5); /* UPDATED shadow */ font-family: 'Mukta', serif; }
 
-.gita-content .p3 .s3 { display: block; font-size: 1.75rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.5rem; color: #f472b6; text-shadow: 0 0 8px rgba(244, 114, 182, 0.5); }
+.gita-content .p3 .s3 { display: block; font-size: 1.75rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.5rem; color: var(--color-accent-secondary); /* UPDATED */ text-shadow: 0 0 8px rgba(255, 115, 240, 0.5); /* UPDATED shadow */ }
 
 .gita-content .p11 {
     display: block; 
     text-align: center; 
     font-weight: 700; 
     font-size: 1.25rem; 
-    color: #f472b6; /* pink-400, like Vakta */
-    text-shadow: 0 0 8px rgba(244, 114, 182, 0.5);
+    color: var(--color-accent-secondary); /* UPDATED */
+    text-shadow: 0 0 8px rgba(255, 115, 240, 0.5); /* UPDATED shadow */
     margin-top: 2.5rem; 
     margin-bottom: 1.5rem;
 }
@@ -634,19 +634,19 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 .gita-content .p4 .s4 .shloka-center { 
    font-size: 1.6rem; 
    font-family: 'Mukta', serif; 
-   color: #dbeafe; /* --- DAY/LIGHT THEME: Standard light blue/white --- */
-   font-weight: 600; /* --- DAY/LIGHT THEME: Semi-bold --- */
+   color: #dbeafe; 
+   font-weight: 600; 
    line-height: 1.8;
    text-align: center;
-   text-shadow: 0 0 8px rgba(56, 189, 248, 0.2); 
+   text-shadow: 0 0 8px rgba(0, 204, 255, 0.2); /* UPDATED */
    transition: color 0.3s ease, font-weight 0.3s ease, text-shadow 0.3s ease; 
 }
 
 /* --- P4 Style for Dark Theme --- */
 html.dark .gita-content .p4 .s4 .shloka-center {
-    color: #ffffff; /* --- NIGHT/DARK THEME: Pure bright white --- */
-    font-weight: 700; /* --- NIGHT/DARK THEME: Bolder --- */
-    text-shadow: 0 0 12px rgba(103, 232, 249, 0.7); /* --- NIGHT/DARK THEME: Stronger cyan glow --- */
+    color: #ffffff; 
+    font-weight: 700; 
+    text-shadow: 0 0 12px rgba(0, 204, 255, 0.7); /* UPDATED */
 }
 
 .gita-content .p5 .s5 { 
@@ -668,15 +668,15 @@ html.dark .gita-content .p4 .s4 .shloka-center {
 }
 
 /* ---------------------------------------------------- */
-/* --- UPDATED SHLOKA DETAILS (COLLAPSED/P1 LOGIC) --- */
+/* --- FINAL SHLOKA DETAILS (COLLAPSED/P1 LOGIC) --- */
 /* ---------------------------------------------------- */
 
 /* p1 (Artha/Word meaning) is always visible */
 .shloka-details.shloka-details-p1 {
     margin-top: 0.75rem; 
-    border-left: 3px solid #22d3ee;
+    border-left: 3px solid var(--color-accent-primary); /* UPDATED */
     padding-left: 1rem;
-    background: rgba(0, 255, 255, 0.03);
+    background: rgba(0, 204, 255, 0.03); /* UPDATED */
     border-radius: 0 8px 8px 0;
     
     padding-top: 0.5rem;
@@ -688,13 +688,12 @@ html.dark .gita-content .p4 .s4 .shloka-center {
 /* Base class for hide/show content (p5/p6 - Bhashya/Tika) */
 .shloka-details.shloka-details-p5p6 {
     overflow: hidden;
-    /* Base padding, applied when expanded */
     padding-top: 0.5rem; 
     padding-bottom: 0.5rem;
     margin-top: 0.5rem; 
-    border-left: 3px solid #f472b6; /* Use Vakta/P3 color for Bhashya border for distinction */
+    border-left: 3px solid var(--color-accent-secondary); /* UPDATED */
     padding-left: 1rem;
-    background: rgba(244, 114, 182, 0.03);
+    background: rgba(255, 115, 240, 0.03); /* UPDATED */
     border-radius: 0 8px 8px 0;
 }
 
@@ -705,12 +704,12 @@ html.dark .gita-content .p4 .s4 .shloka-center {
     transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out, margin 0.3s ease-out;
     padding-top: 0; 
     padding-bottom: 0;
-    margin-top: 0; /* Ensures it doesn't take vertical space */
+    margin-top: 0; 
 }
 
 /* NEW: Style for the expanded state (using :not(.collapsed)) */
 .shloka-details.shloka-details-p5p6:not(.collapsed) {
-    max-height: 1000px; /* Larger than content */
+    max-height: 1000px; 
     opacity: 1;
     transition: max-height 0.5s ease-in, opacity 0.5s ease-in, padding 0.5s ease-in, margin 0.5s ease-in;
 }
@@ -719,7 +718,7 @@ html.dark .gita-content .p4 .s4 .shloka-center {
 
 
 @keyframes highlight-fade-glow {
-    0% { background-color: rgba(56, 189, 248, 0.3); box-shadow: 0 0 20px rgba(56, 189, 248, 0.5); }
+    0% { background-color: rgba(0, 204, 255, 0.3); box-shadow: 0 0 20px rgba(0, 204, 255, 0.5); } /* UPDATED */
     100% { background-color: transparent; box-shadow: none; }
 }
 .highlight-shloka {
@@ -734,12 +733,11 @@ footer {
 }
 footer p {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5); /* Default light color */
+    color: rgba(255, 255, 255, 0.5); 
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
 }
-/* --- Day/Night Font Change --- */
 html.dark footer p {
-    color: rgba(255, 255, 255, 0.7); /* Slightly brighter in dark mode */
+    color: rgba(255, 255, 255, 0.7); 
 }
 
 footer span {
