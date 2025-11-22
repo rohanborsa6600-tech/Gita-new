@@ -31,6 +31,83 @@ const getFirstThreeWords = (text) => {
   return cleanText.split(/[\s,।]+/).slice(0, 3).join(' ') + '...';
 };
 
+// --- NEW: Advanced Search Helpers ---
+
+// A simple Levenshtein Distance implementation for Fuzzy Matching
+// Returns the distance between two strings (how many single-character edits are needed).
+function levenshteinDistance(s1, s2) {
+    const s1Len = s1.length;
+    const s2Len = s2.length;
+    const dp = [];
+
+    for (let i = 0; i <= s1Len; i++) {
+        dp[i] = [i];
+    }
+    for (let j = 1; j <= s2Len; j++) {
+        dp[0][j] = j;
+    }
+
+    for (let i = 1; i <= s1Len; i++) {
+        for (let j = 1; j <= s2Len; j++) {
+            const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
+            dp[i][j] = Math.min(
+                dp[i - 1][j] + 1,      // Deletion
+                dp[i][j - 1] + 1,      // Insertion
+                dp[i - 1][j - 1] + cost // Substitution
+            );
+        }
+    }
+
+    return dp[s1Len][s2Len];
+}
+
+// Basic Transliteration (Roman to Devanagari) for common Sanskrit/Marathi sounds
+// Note: A robust system would require much more complex logic (e.g., using a library).
+function romanToDevanagari(romanTerm) {
+    if (!romanTerm) return '';
+    let result = romanTerm.toLowerCase();
+
+    // Vowel replacements
+    result = result.replace(/oo/g, 'ऊ');
+    result = result.replace(/ee/g, 'ई');
+    result = result.replace(/ai/g, 'ऐ');
+    result = result.replace(/au/g, 'औ');
+    result = result.replace(/sh/g, 'श्');
+    result = result.replace(/kh/g, 'ख्');
+    result = result.replace(/gh/g, 'घ्');
+    result = result.replace(/chh/g, 'छ्');
+    result = result.replace(/jh/g, 'झ्');
+    result = result.replace(/th/g, 'थ्');
+    result = result.replace(/dh/g, 'ध्');
+    result = result.replace(/ph/g, 'फ्');
+    result = result.replace(/bh/g, 'भ्');
+    result = result.replace(/ts/g, 'त्स');
+    result = result.replace(/s/g, 'स');
+    result = result.replace(/v/g, 'व');
+    result = result.replace(/r/g, 'र');
+    result = result.replace(/n/g, 'न');
+    result = result.replace(/m/g, 'म');
+    result = result.replace(/k/g, 'क');
+    result = result.replace(/g/g, 'ग');
+    result = result.replace(/i/g, 'इ');
+    result = result.replace(/u/g, 'उ');
+    result = result.replace(/e/g, 'ए');
+    result = result.replace(/o/g, 'ओ');
+    result = result.replace(/a/g, 'अ');
+    
+    // Cleanup if any 'a' was left and try to convert to matra
+    // This is overly simplistic but helps for demo purposes.
+    result = result.replace(/अ/g, 'ा');
+    result = result.replace(/इ/g, 'ी');
+    result = result.replace(/उ/g, 'ू');
+    result = result.replace(/ए/g, 'े');
+    result = result.replace(/ओ/g, 'ो');
+
+
+    // Remove any remaining Roman characters that are not part of the Devanagari set
+    return result.replace(/[a-z]/g, '');
+}
+
 // --- Application State ---
 let isLoading = true;
 let theme = 'dark';
@@ -385,41 +462,85 @@ function renderSearchComponent() {
     let results = [];
     if (searchTerm) {
         const term = searchTerm.toLowerCase();
+        // --- ADVANCED SEARCH (1): Transliteration (Roman to Devanagari) ---
+        const devanagariTerm = romanToDevanagari(term);
+        
         const idSearchTerm = term.replace(/[\/.\s]+/g, '.');
 
         if (searchScope === 'id' || (searchScope === 'all' && /^\d+\.\d+$/.test(idSearchTerm))) {
             const found = indices.shlokas.find(item => item.id === idSearchTerm);
-            if (found) results = [{ ...found, type: 'श्लोक ID' }];
+            if (found) results = [{ ...found, type: 'श्लोक ID', text: found.text }];
         } else {
-            const rawResults = [];
-            const searchIn = (list, type) => list.forEach(item => {
-                if (item.text.toLowerCase().includes(term)) rawResults.push({ ...item, type });
-            });
-            
-            if (searchScope === 'all' || searchScope === 'shloka') searchIn(indices.shlokas, 'श्लोक');
-            if (searchScope === 'all' || searchScope === 'pada') searchIn(indices.padas, 'पाद');
-            if (searchScope === 'all' || searchScope === 'shabda') searchIn(indices.shabdas, 'शब्द'); // This will now search the word text
-            if (searchScope === 'all' || searchScope === 'vakta') {
-                indices.vaktas.forEach(item => {
-                    if (item.speaker.toLowerCase().includes(term)) {
-                        rawResults.push({ ...item, text: `${item.speaker} - ${item.preview}`, type: 'वक्ता' });
-                    }
-                });
-            }
-            
             const resultMap = new Map();
-            rawResults.forEach(item => {
-                // For aggregated shabdas, we must create entries for each ID
-                if (item.type === 'शब्द' && item.ids) {
-                    item.ids.forEach(id => {
-                        if (!resultMap.has(id)) {
-                            resultMap.set(id, { ...item, id: id, text: item.text }); // Use the word as text
+            
+            const searchIn = (list, type, textKey = 'text') => list.forEach(item => {
+                const itemText = (item[textKey] || '').toLowerCase();
+                const shlokaId = item.id;
+                
+                // Direct Match (Case-insensitive, includes transliteration)
+                const isDirectMatch = itemText.includes(term) || itemText.includes(devanagariTerm);
+                
+                // --- ADVANCED SEARCH (2): Fuzzy Match (If no direct match and searching in shloka/pada/shabda) ---
+                let isFuzzyMatch = false;
+                // We only apply fuzzy matching on text that could contain spelling errors (not IDs/Vaktas)
+                if (!isDirectMatch && (type === 'श्लोक' || type === 'पाद' || type === 'शब्द')) { 
+                    const searchWords = itemText.split(/[,\s।]+/);
+                    
+                    for (const word of searchWords) {
+                        const cleanWord = word.trim().replace(/[.,!]/g, '');
+                        // Check fuzzy match against both original and transliterated term
+                        if (cleanWord.length > 2 && (levenshteinDistance(cleanWord, term) <= 1 || levenshteinDistance(cleanWord, devanagariTerm) <= 1)) {
+                            isFuzzyMatch = true;
+                            break;
                         }
-                    });
-                } else if (!resultMap.has(item.id) || (resultMap.has(item.id) && item.type === 'श्लोक')) {
-                    resultMap.set(item.id, item);
+                    }
+                }
+
+                if (isDirectMatch || isFuzzyMatch) {
+                    if (type === 'शब्द') {
+                        // For aggregated shabdas, add each shloka ID where the word appears
+                        item.ids.forEach(id => {
+                            if (!resultMap.has(id)) {
+                                // Get the actual shloka text to display in the result
+                                const shlokaItem = indices.shlokas.find(s => s.id === id);
+                                if (shlokaItem) {
+                                     resultMap.set(id, { 
+                                         id: id, 
+                                         text: shlokaItem.text, 
+                                         type: 'शब्द', 
+                                         chapter: shlokaItem.chapter 
+                                     });
+                                }
+                            }
+                        });
+                    } else {
+                        // Standard handling for shloka, pada, vakta
+                        const existing = resultMap.get(shlokaId);
+                        // Add the item, but prioritize 'श्लोक' type if the ID is already present
+                        if (!existing || (existing.type !== 'श्लोक' && type === 'श्लोक')) {
+                             resultMap.set(shlokaId, { ...item, type, text: item.text || item.preview });
+                        }
+                    }
                 }
             });
+            
+            // Note: For 'वक्ता', the textKey should be 'speaker' 
+            const searchVaktas = (list, type) => list.forEach(item => {
+                const speakerText = (item.speaker || '').toLowerCase();
+                if (speakerText.includes(term) || speakerText.includes(devanagariTerm)) {
+                     const existing = resultMap.get(item.id);
+                     if (!existing || (existing.type !== 'श्लोक' && type === 'वक्ता')) {
+                         resultMap.set(item.id, { ...item, type, text: `${item.speaker} - ${item.preview}` });
+                     }
+                }
+            });
+
+            // Execute Searches
+            if (searchScope === 'all' || searchScope === 'shloka') searchIn(indices.shlokas, 'श्लोक');
+            if (searchScope === 'all' || searchScope === 'pada') searchIn(indices.padas, 'पाद');
+            if (searchScope === 'all' || searchScope === 'shabda') searchIn(indices.shabdas, 'शब्द', 'text');
+            if (searchScope === 'all' || searchScope === 'vakta') searchVaktas(indices.vaktas, 'वक्ता'); 
+            
             results = Array.from(resultMap.values()).sort((a,b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
         }
     }
@@ -429,7 +550,7 @@ function renderSearchComponent() {
     
     const highlight = (text, term) => {
         if (!term) return text;
-        const regex = new RegExp(`(${term})`, 'gi');
+        const regex = new RegExp(`(${term}|${romanToDevanagari(term)})`, 'gi');
         return text.replace(regex, `<mark>$1</mark>`);
     };
 
@@ -464,10 +585,11 @@ function renderGitaPath() {
         // --- NEW: Add styling for (artha-word) ---
         // This regex finds text inside parentheses and wraps it
         combinedHtml = combinedHtml.replace(/\((.*?)\)/g, '<span class="artha-word">($1)</span>');
-
+        
+        // --- MODIFIED: Highlight both the original term and its Devanagari transliteration ---
         if (term) {
-            const regex = new RegExp(`(${term})`, 'gi');
-            // This will now correctly highlight inside the new span, e.g. <span class="artha-word">(<mark>सञ्जय</mark>)</span>
+            const devanagariTerm = romanToDevanagari(term);
+            const regex = new RegExp(`(${term}|${devanagariTerm})`, 'gi');
             combinedHtml = combinedHtml.replace(regex, `<mark>$1</mark>`);
         }
         
@@ -553,56 +675,58 @@ function setupEventListeners() {
 
     // --- Event Delegation for Main Content ---
     mainContent.addEventListener('click', (event) => {
-        // Chapter Grid Button
-        const gridButton = event.target.closest('.chapter-grid-button');
-        if (gridButton) {
-            currentChapterNum = Number(gridButton.dataset.chapterNum);
+        // Use a single variable for efficiency
+        let el;
+
+        // 1. Chapter Grid Button
+        el = event.target.closest('.chapter-grid-button');
+        if (el) {
+            currentChapterNum = Number(el.dataset.chapterNum);
             showView('path');
             return;
         }
 
-        // Suchi Tab
-        const suchiTab = event.target.closest('.suchi-tab-button');
-        if (suchiTab) {
-            currentSuchiTab = Number(suchiTab.dataset.tabIndex);
+        // 2. Suchi Tabs/Filters
+        el = event.target.closest('.suchi-tab-button');
+        if (el) {
+            currentSuchiTab = Number(el.dataset.tabIndex);
             currentLetterFilter = ''; // Reset filter
             renderGitaSuchi(); // Re-render
             return;
         }
         
-        // Letter Filter
-        const letterButton = event.target.closest('.letter-filter-button');
-        if (letterButton) {
-            currentLetterFilter = letterButton.dataset.letter;
+        el = event.target.closest('.letter-filter-button');
+        if (el) {
+            currentLetterFilter = el.dataset.letter;
             renderGitaSuchi(); // Re-render
             return;
         }
         
-        // Suchi/Search Item
-        const itemButton = event.target.closest('.suchi-item-button, .search-result-item, .shabd-id-button');
-        if (itemButton) {
-            currentChapterNum = Number(itemButton.dataset.shlokaId.split('.')[0]);
-            scrollToShloka = itemButton.dataset.shlokaId;
-            highlightTerm = itemButton.dataset.highlight || null;
+        // 3. Suchi/Search Item to jump to Shloka
+        el = event.target.closest('.suchi-item-button, .search-result-item, .shabd-id-button');
+        if (el) {
+            currentChapterNum = Number(el.dataset.shlokaId.split('.')[0]);
+            scrollToShloka = el.dataset.shlokaId;
+            highlightTerm = el.dataset.highlight || null;
             showView('path');
             return;
         }
         
-        // Search Scope
-        const scopeButton = event.target.closest('.scope-button');
-        if (scopeButton) {
-            searchScope = scopeButton.dataset.scope;
+        // 4. Search Scope
+        el = event.target.closest('.scope-button');
+        if (el) {
+            searchScope = el.dataset.scope;
             renderSearchComponent(); // Re-render scopes
-            renderSearchComponent(); // Re-render results
+            renderSearchComponent(); // Re-render results (redundant but ensures full refresh)
             return;
         }
         
-        // --- CHANGED (REQUEST 2): Added Shloka Tap Handler ---
-        const shlokaTapArea = event.target.closest('.shloka-tap-area');
-        if (shlokaTapArea) {
+        // --- CHANGED (REQUEST 2): Shloka Tap Handler ---
+        el = event.target.closest('.shloka-tap-area');
+        if (el) {
             if (window.getSelection().toString()) return; // Don't tap if user is selecting text
 
-            const shlokaBlock = shlokaTapArea.closest('.shloka-block');
+            const shlokaBlock = el.closest('.shloka-block');
             if (shlokaBlock) {
                 const p5p6Details = shlokaBlock.querySelector('.shloka-details-p5p6');
                 if (p5p6Details) {
