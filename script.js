@@ -34,7 +34,6 @@ const getFirstThreeWords = (text) => {
 // --- NEW: Advanced Search Helpers ---
 
 // A simple Levenshtein Distance implementation for Fuzzy Matching
-// Returns the distance between two strings (how many single-character edits are needed).
 function levenshteinDistance(s1, s2) {
     const s1Len = s1.length;
     const s2Len = s2.length;
@@ -61,8 +60,7 @@ function levenshteinDistance(s1, s2) {
     return dp[s1Len][s2Len];
 }
 
-// Basic Transliteration (Roman to Devanagari) for common Sanskrit/Marathi sounds
-// Note: A robust system would require much more complex logic (e.g., using a library).
+// Basic Transliteration (Roman to Devanagari)
 function romanToDevanagari(romanTerm) {
     if (!romanTerm) return '';
     let result = romanTerm.toLowerCase();
@@ -96,7 +94,6 @@ function romanToDevanagari(romanTerm) {
     result = result.replace(/a/g, 'अ');
     
     // Cleanup if any 'a' was left and try to convert to matra
-    // This is overly simplistic but helps for demo purposes.
     result = result.replace(/अ/g, 'ा');
     result = result.replace(/इ/g, 'ी');
     result = result.replace(/उ/g, 'ू');
@@ -108,9 +105,78 @@ function romanToDevanagari(romanTerm) {
     return result.replace(/[a-z]/g, '');
 }
 
+// --- NEW: Theme Toggle Logic ---
+function toggleTheme() {
+    const htmlElement = document.documentElement;
+    const isCurrentlyDark = htmlElement.classList.contains('dark');
+    
+    // Ternary Operator: Set the newTheme to 'light' if currently dark, otherwise 'dark'.
+    const newTheme = isCurrentlyDark ? 'light' : 'dark';
+
+    // Apply the new theme class and update the icon state
+    if (newTheme === 'dark') {
+        htmlElement.classList.add('dark');
+        iconMoon.style.display = 'block';
+        iconSun.style.display = 'none';
+    } else {
+        htmlElement.classList.remove('dark');
+        iconMoon.style.display = 'none';
+        iconSun.style.display = 'block';
+    }
+    
+    // Save the new preference to local storage
+    localStorage.setItem('theme', newTheme);
+}
+
+function applyInitialTheme() {
+    const htmlElement = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    
+    // Priority 1: Saved preference in localStorage
+    if (savedTheme) {
+        if (savedTheme === 'dark') {
+            htmlElement.classList.add('dark');
+            theme = 'dark';
+        } else {
+            htmlElement.classList.remove('dark');
+            theme = 'light';
+        }
+    } 
+    // Priority 2: System preference (if no saved theme is found)
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        htmlElement.classList.add('dark');
+        theme = 'dark';
+    } else {
+        theme = 'light';
+    }
+    
+    // Set the initial icon state based on the applied theme
+    iconMoon.style.display = theme === 'dark' ? 'block' : 'none';
+    iconSun.style.display = theme === 'dark' ? 'none' : 'block';
+    
+    // Optional: Add a listener for system preference changes (runs after initial load)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        // Only re-apply if the user hasn't explicitly set a theme (i.e., savedTheme is null)
+        if (!localStorage.getItem('theme')) {
+            if (e.matches) {
+                htmlElement.classList.add('dark');
+                theme = 'dark';
+            } else {
+                htmlElement.classList.remove('dark');
+                theme = 'light';
+            }
+             // Update icons on system change
+            iconMoon.style.display = theme === 'dark' ? 'block' : 'none';
+            iconSun.style.display = theme === 'dark' ? 'none' : 'block';
+        }
+    });
+}
+// --- END Theme Toggle Logic ---
+
+
 // --- Application State ---
 let isLoading = true;
-let theme = 'dark';
+let theme = 'dark'; // Will be overridden by applyInitialTheme
 let fontSize = 16;
 let currentView = 'grid';
 let previousView = 'grid';
@@ -657,13 +723,8 @@ function setupEventListeners() {
     nav.search.addEventListener('click', () => showView('search'));
     backButton.addEventListener('click', () => showView(previousView));
 
-    // Theme Toggle
-    themeToggle.addEventListener('click', () => {
-        theme = theme === 'dark' ? 'light' : 'dark';
-        docEl.className = theme;
-        iconMoon.style.display = theme === 'dark' ? 'none' : 'block';
-        iconSun.style.display = theme === 'dark' ? 'block' : 'none';
-    });
+    // --- MODIFIED: Theme Toggle uses the unified toggleTheme function ---
+    themeToggle.addEventListener('click', toggleTheme);
     
     // Font Size
     fontDecrease.addEventListener('click', () => {
@@ -749,9 +810,8 @@ function setupEventListeners() {
 // --- App Initialization (Modified to fetch data) ---
 async function loadDataAndRunApp() {
     try {
-        // 1. Set initial theme (can do this early)
-        iconMoon.style.display = 'none';
-        iconSun.style.display = 'block';
+        // 1. Apply saved theme or system preference immediately
+        applyInitialTheme();
 
         // 2. Fetch data from the separate file
         const response = await fetch('gita-data.html');
