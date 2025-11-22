@@ -613,18 +613,20 @@ function renderGitaPath() {
             case 'chapterEnd': 
                 return `<div class="animate-slide-in-up">${block.html}</div>`;
             case 'shloka':
-                // --- CHANGED (REQUEST 2): Added .shloka-tap-area and removed 'visible' classes ---
+                // --- MODIFIED: p5/p6 details placed immediately after p4 (shloka text) and given 'collapsed' class ---
                 return `
                     <div id="shloka-${block.id}" class="shloka-block glass-panel animate-slide-in-up">
                         <div class="shloka-tap-area">
                             ${highlight(block.p4, highlightTerm)}
                         </div>
-                        <div class="shloka-details shloka-details-p1">
-                            ${highlight(block.p1, highlightTerm)}
-                        </div>
-                        <div class="shloka-details shloka-details-p5p6">
+                        
+                        <div class="shloka-details shloka-details-p5p6 collapsed"> 
                             ${highlight(block.p5, highlightTerm)}
                             ${highlight(block.p6, highlightTerm)}
+                        </div>
+
+                        <div class="shloka-details shloka-details-p1">
+                            ${highlight(block.p1, highlightTerm)}
                         </div>
                     </div>
                 `;
@@ -721,7 +723,7 @@ function setupEventListeners() {
             return;
         }
         
-        // --- CHANGED (REQUEST 2): Shloka Tap Handler ---
+        // --- MODIFIED: Shloka Tap Handler now toggles 'collapsed' class ---
         el = event.target.closest('.shloka-tap-area');
         if (el) {
             if (window.getSelection().toString()) return; // Don't tap if user is selecting text
@@ -730,7 +732,7 @@ function setupEventListeners() {
             if (shlokaBlock) {
                 const p5p6Details = shlokaBlock.querySelector('.shloka-details-p5p6');
                 if (p5p6Details) {
-                    p5p6Details.classList.toggle('visible');
+                    p5p6Details.classList.toggle('collapsed');
                 }
             }
             return; // Stop further processing
