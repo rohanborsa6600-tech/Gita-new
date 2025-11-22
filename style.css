@@ -596,7 +596,7 @@ html.dark #search-input {
 }
 html.dark .gita-content .p1 .s1 { color: #d1d5db; }
 
-/* --- REQUEST 1: Style for (artha-word) --- */
+/* --- REQUEST: Style for (artha-word) --- */
 .gita-content .p1 .s1 .artha-word {
     font-weight: 700;
     color: #facc15; /* Bright yellow */
@@ -623,14 +623,14 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
     transition: all 0.3s ease;
 }
 
-/* --- REQUEST 2: Style for tap area --- */
+/* --- REQUEST: Style for tap area --- */
 .gita-content .shloka-tap-area {
     cursor: pointer; 
     user-select: none;
     -webkit-user-select: none;
 }
 
-/* --- REQUEST 3: Style for Shloka (P4) --- */
+/* --- REQUEST: Style for Shloka (P4) --- */
 .gita-content .p4 .s4 .shloka-center { 
    font-size: 1.6rem; 
    font-family: 'Mukta', serif; 
@@ -642,7 +642,7 @@ html.dark .gita-content .p1 .s1 { color: #d1d5db; }
    transition: color 0.3s ease, font-weight 0.3s ease, text-shadow 0.3s ease; 
 }
 
-/* --- P4 Style for Dark Theme (Updated) --- */
+/* --- P4 Style for Dark Theme --- */
 html.dark .gita-content .p4 .s4 .shloka-center {
     color: #ffffff; /* --- NIGHT/DARK THEME: Pure bright white --- */
     font-weight: 700; /* --- NIGHT/DARK THEME: Bolder --- */
@@ -667,9 +667,13 @@ html.dark .gita-content .p4 .s4 .shloka-center {
     text-align: justify; 
 }
 
-.shloka-details {
-    /* --- Always visible (for P1) --- */
-    margin-top: 0.75rem;
+/* ---------------------------------------------------- */
+/* --- UPDATED SHLOKA DETAILS (COLLAPSED/P1 LOGIC) --- */
+/* ---------------------------------------------------- */
+
+/* p1 (Artha/Word meaning) is always visible */
+.shloka-details.shloka-details-p1 {
+    margin-top: 0.75rem; 
     border-left: 3px solid #22d3ee;
     padding-left: 1rem;
     background: rgba(0, 255, 255, 0.03);
@@ -678,27 +682,40 @@ html.dark .gita-content .p4 .s4 .shloka-center {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     opacity: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
 }
 
-/* --- Hide p5/p6 by default --- */
+/* Base class for hide/show content (p5/p6 - Bhashya/Tika) */
 .shloka-details.shloka-details-p5p6 {
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    max-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    opacity: 0;
-    margin-top: 0; 
+    /* Base padding, applied when expanded */
+    padding-top: 0.5rem; 
+    padding-bottom: 0.5rem;
+    margin-top: 0.5rem; 
+    border-left: 3px solid #f472b6; /* Use Vakta/P3 color for Bhashya border for distinction */
+    padding-left: 1rem;
+    background: rgba(244, 114, 182, 0.03);
+    border-radius: 0 8px 8px 0;
 }
 
-/* --- 'visible' class to show p5/p6 --- */
-.shloka-details.shloka-details-p5p6.visible {
-    max-height: 1000px; /* arbitrary high value */
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    opacity: 1;
-    margin-top: 0.5rem; 
+/* NEW: Style for the collapsed state */
+.shloka-details.shloka-details-p5p6.collapsed {
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out, margin 0.3s ease-out;
+    padding-top: 0; 
+    padding-bottom: 0;
+    margin-top: 0; /* Ensures it doesn't take vertical space */
 }
+
+/* NEW: Style for the expanded state (using :not(.collapsed)) */
+.shloka-details.shloka-details-p5p6:not(.collapsed) {
+    max-height: 1000px; /* Larger than content */
+    opacity: 1;
+    transition: max-height 0.5s ease-in, opacity 0.5s ease-in, padding 0.5s ease-in, margin 0.5s ease-in;
+}
+
+/* ---------------------------------------------------- */
 
 
 @keyframes highlight-fade-glow {
